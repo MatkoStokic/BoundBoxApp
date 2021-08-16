@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "BoundBoxApp.DAL/1.0.0": {
+        "dependencies": {
+          "BoundBoxApp.Model": "1.0.0"
+        },
+        "runtime": {
+          "BoundBoxApp.DAL.dll": {}
+        }
+      },
+      "BoundBoxApp.Model/1.0.0": {
+        "runtime": {
+          "BoundBoxApp.Model.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BoundBoxApp.DAL/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BoundBoxApp.Model/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

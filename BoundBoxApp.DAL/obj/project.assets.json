@@ -1,0 +1,93 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "BoundBoxApp.Model/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/BoundBoxApp.Model.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/BoundBoxApp.Model.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BoundBoxApp.Model/1.0.0": {
+      "type": "project",
+      "path": "../BoundBoxApp.Model/BoundBoxApp.Model.csproj",
+      "msbuildProject": "../BoundBoxApp.Model/BoundBoxApp.Model.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETCoreApp,Version=v3.1": [
+      "BoundBoxApp.Model >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\DesBelli\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.DAL\\BoundBoxApp.DAL.csproj",
+      "projectName": "BoundBoxApp.DAL",
+      "projectPath": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.DAL\\BoundBoxApp.DAL.csproj",
+      "packagesPath": "C:\\Users\\DesBelli\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.DAL\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Microsoft\\Xamarin\\NuGet\\"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\DesBelli\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "netcoreapp3.1"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "projectReferences": {
+            "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj": {
+              "projectPath": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "netcoreapp3.1": {
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
