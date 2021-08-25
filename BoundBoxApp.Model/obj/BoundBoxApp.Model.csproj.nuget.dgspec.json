@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj": {}
+    "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\App\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj": {}
   },
   "projects": {
-    "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj": {
+    "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\App\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj",
+        "projectUniqueName": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\App\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj",
         "projectName": "BoundBoxApp.Model",
-        "projectPath": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj",
+        "projectPath": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\App\\BoundBoxApp.Model\\BoundBoxApp.Model.csproj",
         "packagesPath": "C:\\Users\\DesBelli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\BoundBoxApp.Model\\obj\\",
+        "outputPath": "C:\\Users\\DesBelli\\Desktop\\Zavrsni rad\\App\\BoundBoxApp.Model\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -41,6 +41,12 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.Extensions.Identity.Stores": {
+              "target": "Package",
+              "version": "[5.0.9, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

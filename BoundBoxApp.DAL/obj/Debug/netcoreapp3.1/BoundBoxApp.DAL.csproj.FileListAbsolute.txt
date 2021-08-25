@@ -9,3 +9,14 @@ C:\Users\DesBelli\Desktop\Zavrsni rad\BoundBoxApp.DAL\bin\Debug\netcoreapp3.1\Bo
 C:\Users\DesBelli\Desktop\Zavrsni rad\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.csproj.CopyComplete
 C:\Users\DesBelli\Desktop\Zavrsni rad\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.dll
 C:\Users\DesBelli\Desktop\Zavrsni rad\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.pdb
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\bin\Debug\netcoreapp3.1\BoundBoxApp.DAL.deps.json
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\bin\Debug\netcoreapp3.1\BoundBoxApp.DAL.dll
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\bin\Debug\netcoreapp3.1\BoundBoxApp.DAL.pdb
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\bin\Debug\netcoreapp3.1\BoundBoxApp.Model.dll
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\bin\Debug\netcoreapp3.1\BoundBoxApp.Model.pdb
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.csprojAssemblyReference.cache
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.AssemblyInfoInputs.cache
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.AssemblyInfo.cs
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.csproj.CopyComplete
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.dll
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.DAL\obj\Debug\netcoreapp3.1\BoundBoxApp.DAL.pdb

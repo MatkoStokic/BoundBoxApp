@@ -6,3 +6,11 @@ C:\Users\DesBelli\Desktop\Zavrsni rad\BoundBoxApp.Model\bin\Debug\netcoreapp3.1\
 C:\Users\DesBelli\Desktop\Zavrsni rad\BoundBoxApp.Model\bin\Debug\netcoreapp3.1\BoundBoxApp.Model.pdb
 C:\Users\DesBelli\Desktop\Zavrsni rad\BoundBoxApp.Model\obj\Debug\netcoreapp3.1\BoundBoxApp.Model.dll
 C:\Users\DesBelli\Desktop\Zavrsni rad\BoundBoxApp.Model\obj\Debug\netcoreapp3.1\BoundBoxApp.Model.pdb
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.Model\bin\Debug\netcoreapp3.1\BoundBoxApp.Model.deps.json
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.Model\bin\Debug\netcoreapp3.1\BoundBoxApp.Model.dll
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.Model\bin\Debug\netcoreapp3.1\BoundBoxApp.Model.pdb
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.Model\obj\Debug\netcoreapp3.1\BoundBoxApp.Model.AssemblyInfoInputs.cache
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.Model\obj\Debug\netcoreapp3.1\BoundBoxApp.Model.AssemblyInfo.cs
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.Model\obj\Debug\netcoreapp3.1\BoundBoxApp.Model.dll
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.Model\obj\Debug\netcoreapp3.1\BoundBoxApp.Model.pdb
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp.Model\obj\Debug\netcoreapp3.1\BoundBoxApp.Model.csprojAssemblyReference.cache

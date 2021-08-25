@@ -1,0 +1,61 @@
+﻿@page "/test"
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityUser> _UserManager
+@inject RoleManager<IdentityRole> _RoleManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+
+<span>@Message</span>
+
+<AuthorizeView Roles="Users">
+    <Authorized>
+        <p>Youre In!</p>
+    </Authorized>
+</AuthorizeView>
+
+@code
+{
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; }
+
+    string USER_ROLE = "Users";
+
+    string CurrentEmail;
+    string Message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authStateTask;
+        var CurrentEmail = authState.User.Identity.Name;
+
+        var user = await _UserManager.FindByNameAsync(CurrentEmail);
+        if (user == null)
+        {
+            var newUser = new IdentityUser { UserName = CurrentEmail, Email = CurrentEmail };
+            var createResult = await _UserManager.CreateAsync(newUser);
+            if (createResult.Succeeded)
+            {
+                var roleResult = await _UserManager.AddToRoleAsync(newUser, USER_ROLE);
+                if (roleResult.Succeeded)
+                {
+                    Message = ("Good job");
+                }
+            }
+        }
+        else
+        {
+            var RoleResult = await _UserManager.IsInRoleAsync(user, USER_ROLE);
+            if (RoleResult == true)
+            {
+                Message = "User is a Valid User";
+            }
+            else
+            {
+                Message = "User is invalid";
+            }
+        }
+        
+    }
+}

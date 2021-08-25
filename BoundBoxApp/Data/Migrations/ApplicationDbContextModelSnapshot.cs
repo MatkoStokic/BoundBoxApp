@@ -19,6 +19,36 @@ namespace BoundBoxApp.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("BoundBoxApp.Model.Bounds", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bounds");
+                });
+
+            modelBuilder.Entity("BoundBoxApp.Model.Marker", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Marker");
+                });
+
+            modelBuilder.Entity("BoundBoxApp.Model.Project", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Project");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -43,27 +73,27 @@ namespace BoundBoxApp.Data.Migrations
                         .HasName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("Role");
 
                     b.HasData(
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                            ConcurrencyStamp = "a230e9b5-9d78-4489-a9c8-6ebc627e4a99",
+                            ConcurrencyStamp = "25d1fcc2-6745-45cd-bc63-f025880bd68d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb8",
-                            ConcurrencyStamp = "75414d00-b41e-45ac-8fe1-59c56387b64d",
+                            ConcurrencyStamp = "f0f75630-36d7-4cc4-971e-8743012fe480",
                             Name = "Annotator",
                             NormalizedName = "ANNOTATOR"
                         },
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb7",
-                            ConcurrencyStamp = "71fce38c-f113-4165-ba43-8589f2180292",
+                            ConcurrencyStamp = "113121fa-7576-4cca-aa09-4e6e39f1dc8a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -90,7 +120,30 @@ namespace BoundBoxApp.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("RoleClaim");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "Role",
+                            ClaimValue = "Admin",
+                            RoleId = "8e445865-a24d-4543-a6c6-9443d048cdb9"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "Role",
+                            ClaimValue = "Annotator",
+                            RoleId = "8e445865-a24d-4543-a6c6-9443d048cdb8"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "Role",
+                            ClaimValue = "User",
+                            RoleId = "8e445865-a24d-4543-a6c6-9443d048cdb7"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
@@ -155,23 +208,23 @@ namespace BoundBoxApp.Data.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("User");
 
                     b.HasData(
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c4e9b004-5d7f-4d41-8f71-09335aeaad52",
+                            ConcurrencyStamp = "b7b2de3f-3151-4cc5-a402-d9e5df5391bd",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "Admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFTQWNM+KgTEam6lKA/yHRigeqhb94wW6dHrRvdxuQnYJSc3dgbr3qDSyDkxZGlFsA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGzFVPIkB1S5ajKPqGinhLUUeI2V9E3+z1MI1xMJm+qog1sUAscmwQqE+4ACAW6vhA==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "8d57fd0b-9da6-477b-8470-f971129dcccb",
+                            SecurityStamp = "8100ac7f-7aa5-4c55-bd25-bbbd24d162da",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         },
@@ -179,16 +232,16 @@ namespace BoundBoxApp.Data.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b75c60a9-2a29-4b67-b2b9-e40123c36c2c",
+                            ConcurrencyStamp = "1e1e1d82-dcd6-4b83-8d48-df09ecfb4cb9",
                             Email = "annotator@annotator.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ANNOTATOR@ANNOTATOR.COM",
                             NormalizedUserName = "Annotator",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDaY7/uE1CBIgTmJuLBvN4ZgvVgGWdNJ2AQYR8KJOboMAisT33nWVnhMpiO3EV/MNw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJcXO9Vg11RX2zNLRbC2dMlrR2CN5AvGVAJw/ET41IgiPRrP20iTOsllbLKIB7Chhg==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "42399d1e-c7f5-4001-b1b2-78d95617ef83",
+                            SecurityStamp = "b53d2016-4b22-4c1f-8d83-ba9146930329",
                             TwoFactorEnabled = false,
                             UserName = "Annotator"
                         },
@@ -196,16 +249,16 @@ namespace BoundBoxApp.Data.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dbf5ba92-0137-4697-a259-8986b2a1208e",
+                            ConcurrencyStamp = "afcdd987-f165-479d-b771-bda186fee168",
                             Email = "user@user.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@USER.COM",
                             NormalizedUserName = "User",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHTg+P7Cj5EfnEuBDqe0dKxk/GruAIRX/sCFad8qpCg+Iru96PsZssvqmzBPp4GV+g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECEMVe5BQdVG9DtrHssX6hSRpnwNBalqqsLI5WWHhlQtq8503+1eYtD4G/CN36Zcqg==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "1659ad46-599f-4e68-9f8d-dbef3f7ae2c7",
+                            SecurityStamp = "5c966353-909a-4844-8c66-89d59a875e51",
                             TwoFactorEnabled = false,
                             UserName = "User"
                         });
@@ -232,7 +285,7 @@ namespace BoundBoxApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("UserClaim");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -256,7 +309,7 @@ namespace BoundBoxApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("UserLogin");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -271,7 +324,7 @@ namespace BoundBoxApp.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("UserRole");
 
                     b.HasData(
                         new
@@ -309,7 +362,7 @@ namespace BoundBoxApp.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("UserToken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
