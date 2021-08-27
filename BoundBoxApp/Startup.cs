@@ -14,7 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BoundBoxApp.Areas.Identity;
-using BoundBoxApp.Data;
+using BoundBoxApp.DAL;
+using BoundBoxApp.DAL.Services;
 
 namespace BoundBoxApp
 {
@@ -40,7 +41,8 @@ namespace BoundBoxApp
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<ProjectService>();
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

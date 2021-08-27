@@ -2715,7 +2715,9 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
-          "BoundBoxApp.Model": "1.0.0"
+          "BoundBoxApp.Model": "1.0.0",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.1",
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1"
         },
         "compile": {
           "bin/placeholder/BoundBoxApp.DAL.dll": {}
@@ -8821,9 +8823,7 @@
       "BoundBoxApp.DAL >= 1.0.0",
       "BoundBoxApp.Model >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore >= 3.1.1",
-      "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 3.1.1",
       "Microsoft.AspNetCore.Identity.UI >= 3.1.1",
-      "Microsoft.EntityFrameworkCore.SqlServer >= 3.1.1",
       "Microsoft.EntityFrameworkCore.Tools >= 3.1.1",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.5"
     ]
@@ -8885,15 +8885,7 @@
             "target": "Package",
             "version": "[3.1.1, )"
           },
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
-            "target": "Package",
-            "version": "[3.1.1, )"
-          },
           "Microsoft.AspNetCore.Identity.UI": {
-            "target": "Package",
-            "version": "[3.1.1, )"
-          },
-          "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
             "version": "[3.1.1, )"
           },

@@ -9,14 +9,14 @@ namespace BoundBoxApp.Model
     {
         [Key]
         public string Id { get; set; }
-        string Src { get; set; }
-        string Name { get; set; }
-        string Category { get; set; }
-        string IsForAnnotating { get; set; }
+        public string Src { get; set; }
+        public string Title { get; set; }
+        public string Category { get; set; }
+        public bool IsForAnnotating { get; set; }
 
 
         [ForeignKey("User")]
-        string OenrId { get; set; }
-        IdentityUser Owner { get; set; }
+        public string OwnerId { get; set; }
+        public IdentityUser Owner { get; set; }
     }
 }

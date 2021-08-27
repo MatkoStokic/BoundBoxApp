@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BoundBoxApp.Model;
 
-namespace BoundBoxApp.Data
+namespace BoundBoxApp.DAL
 {
     public class ApplicationDbContext : IdentityDbContext
     {

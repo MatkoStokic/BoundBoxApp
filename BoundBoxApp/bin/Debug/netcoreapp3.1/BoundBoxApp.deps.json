@@ -28,9 +28,7 @@
           "BoundBoxApp.DAL": "1.0.0",
           "BoundBoxApp.Model": "1.0.0",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "3.1.1",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.1",
           "Microsoft.AspNetCore.Identity.UI": "3.1.1",
-          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1",
           "Microsoft.EntityFrameworkCore.Tools": "3.1.1",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.5",
           "Microsoft.AspNetCore.Antiforgery": "3.1.0.0",
@@ -2278,7 +2276,9 @@
       },
       "BoundBoxApp.DAL/1.0.0": {
         "dependencies": {
-          "BoundBoxApp.Model": "1.0.0"
+          "BoundBoxApp.Model": "1.0.0",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.1",
+          "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1"
         },
         "runtime": {
           "BoundBoxApp.DAL.dll": {}

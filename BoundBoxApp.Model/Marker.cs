@@ -9,8 +9,8 @@ namespace BoundBoxApp.Model
     {
         [Key]
         public string Id { get; set; }
-        Double XCoords { get; set; }
-        Double YCoords { get; set; }
+        public double XCoords { get; set; }
+        public double YCoords { get; set; }
         
     }
 }

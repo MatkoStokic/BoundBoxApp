@@ -357,7 +357,6 @@ C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Ra
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Component.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Counter.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Error.razor.g.cs
-C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\FetchData.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\RazorDeclaration\Shared\LoginDisplay.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\RazorDeclaration\Shared\MainLayout.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\RazorDeclaration\Shared\NavMenu.razor.g.cs
@@ -370,7 +369,6 @@ C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Ra
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Pages\Component.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Pages\Counter.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Pages\Error.razor.g.cs
-C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Pages\FetchData.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Shared\LoginDisplay.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Shared\MainLayout.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Shared\NavMenu.razor.g.cs
@@ -432,3 +430,5 @@ C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Bo
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\BoundBoxApp.pdb
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\RazorDeclaration\Shared\Component.razor.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Shared\Component.razor.g.cs
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Pages\Project\CreateProject.cshtml.g.cs
+C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Pages\Project\Project.cshtml.g.cs

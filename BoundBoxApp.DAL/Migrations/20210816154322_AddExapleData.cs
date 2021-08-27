@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BoundBoxApp.Data.Migrations
+namespace BoundBoxApp.DAL.Migrations
 {
     public partial class AddExapleData : Migration
     {

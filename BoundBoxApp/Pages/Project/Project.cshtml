@@ -1,0 +1,32 @@
+﻿@page "/project"
+@model BoundBoxApp.Pages.Project.ProjectModel
+
+
+@{
+    List<BoundBoxApp.Model.Project> projects = 
+        ViewData["Projects"] as List<BoundBoxApp.Model.Project>;
+}
+
+
+<h2>Projects</h2>
+
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th></th>
+    </tr>
+    @foreach (var project in projects)
+    {
+        <tr>
+            <td>@project.Title</td>
+            <td>@project.Category</td>
+            <td>
+                <a class="btn" href="/project/@project.Id">Edit</a>
+            </td>
+        </tr>
+    }
+</table>
+
+
+

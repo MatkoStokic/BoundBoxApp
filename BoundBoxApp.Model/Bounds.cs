@@ -12,14 +12,14 @@ namespace BoundBoxApp.Model
         public string Id { get; set; }
 
         [ForeignKey("User")]
-        string AnnotatorId { get; set; }
-        IdentityUser Annotator { get; set; }
+        public string AnnotatorId { get; set; }
+        public IdentityUser Annotator { get; set; }
 
         [ForeignKey("Project")]
-        string ProjectId { get; set; }
-        Project Project { get; set; }
+        public string ProjectId { get; set; }
+        public Project Project { get; set; }
 
 
-        ICollection<Marker> Markers { get; set; }
+        public ICollection<Marker> Markers { get; set; }
     }
 }
