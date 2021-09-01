@@ -10,23 +10,31 @@
 
 <h2>Projects</h2>
 
-<table>
-    <tr>
-        <th>Title</th>
-        <th>Category</th>
-        <th></th>
-    </tr>
-    @foreach (var project in projects)
-    {
+<table class="table">
+    <thead>
         <tr>
-            <td>@project.Title</td>
-            <td>@project.Category</td>
-            <td>
-                <a class="btn" href="/project/@project.Id">Edit</a>
-            </td>
+            <th scope="col">Title</th>
+            <th scope="col">Category</th>
+            <th scope="col">Is for Annotation </th>
+            <th scope="col"></th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var project in projects)
+        {
+            <tr>
+                <td>@project.Title</td>
+                <td>@project.Category</td>
+                <td>@project.IsForAnnotating</td>
+                <td>
+                    <a class="btn btn-outline-secondary btn-sm" href="/project/@project.Id">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+<a href="/project/new" class="btn btn-primary my-2">Add New Project</a>
 
 
 

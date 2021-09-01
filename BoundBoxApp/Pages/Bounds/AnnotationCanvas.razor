@@ -1,0 +1,146 @@
+﻿@page "/canvas"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@using System.Drawing
+@using Microsoft.AspNetCore.Hosting
+@using System.IO
+@using BoundBoxApp.Model
+@inject IJSRuntime jsRuntime
+@inject IWebHostEnvironment environment
+
+<div class="w-100">
+    <div @ref="divCanvas" oncontextmenu="return false;" @onmouseup="OnClick" id="canvasContainer"
+         style="background-image:url('@ImageSrc');background-size:contain">
+
+        <BECanvas @ref="myCanvas" Width="@width" Height="@height"></BECanvas>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string ImageSrc { get; set; }
+
+    public static List<Marker> markers = new List<Marker>();
+    private static bool processing = false;
+
+    int width;
+    int height;
+
+    ElementReference divCanvas;
+    Blazor.Extensions.BECanvasComponent myCanvas;
+    Canvas2DContext currentCanvasContext;
+
+    async void OnClick(MouseEventArgs eventArgs)
+    {
+        if(processing)
+        {
+            return;
+        }
+        processing = true;
+
+        double mouseX = 0;
+        double mouseY = 0;
+
+        if (divCanvas.Id?.Length > 0)
+        {
+            int markRadius = width / 160;
+            string data = await jsRuntime.InvokeAsync<string>("getDivCanvasOffsets",
+                new object[] { divCanvas, width });
+            JObject offsets = (JObject)JsonConvert.DeserializeObject(data);
+            mouseX = eventArgs.ClientX + offsets.Value<double>("offsetLeft");
+            mouseY = eventArgs.ClientY + offsets.Value<double>("offsetTop");
+            mouseX *= offsets.Value<double>("ratio");
+            mouseY *= offsets.Value<double>("ratio");
+
+            bool contains = false;
+
+            foreach (Marker marker in markers)
+            {
+                if (isOnMarker(mouseX, marker.XCoords, markRadius)
+                    && isOnMarker(mouseY, marker.YCoords, markRadius))
+                {
+                    contains = true;
+                    if (eventArgs.Button == 2)
+                    {
+                        markers.Remove(marker);
+                    }
+                    break;
+                }
+            }
+
+            if (!contains)
+            {
+                markers.Add(new Marker() { XCoords = mouseX, YCoords = mouseY });
+            }
+
+            currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
+
+            await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
+            await RenderLines(markers, markRadius);
+            await RenderMarkers(markers, markRadius);
+            processing = false;
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        Bitmap img = new Bitmap(Path.Combine(environment.ContentRootPath, "wwwroot" + ImageSrc), false);
+        width = img.Width;
+        height = img.Height;
+
+        markers = new List<Marker>();
+        processing = false;
+
+        return base.OnInitializedAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        jsRuntime.InvokeVoidAsync("canvasSize", new object[] { width, height });
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private bool isOnMarker(Double mouseCoord, Double markerCoord, int dist)
+    {
+        return Math.Abs(mouseCoord - markerCoord) < dist;
+    }
+
+    private async Task RenderLines(List<Marker> markers, int markRadius)
+    {
+        await currentCanvasContext.SetFillStyleAsync("rgb(244, 26, 26)");
+        await currentCanvasContext.SetStrokeStyleAsync("rgb(244, 26, 26)");
+        await currentCanvasContext.SetLineWidthAsync(markRadius / 2);
+
+        await currentCanvasContext.BeginPathAsync();
+        await currentCanvasContext.MoveToAsync(markers[0].XCoords, markers[0].YCoords);
+        foreach (Marker marker in markers)
+        {
+            await currentCanvasContext.LineToAsync(marker.XCoords, marker.YCoords);
+        }
+        await currentCanvasContext.ClosePathAsync();
+
+        await currentCanvasContext.SetGlobalAlphaAsync(.5f);
+        await currentCanvasContext.FillAsync();
+        await currentCanvasContext.SetGlobalAlphaAsync(1f);
+        await currentCanvasContext.StrokeAsync();
+    }
+
+
+    private async Task RenderMarkers(List<Marker> markers, int markRadius)
+    {
+        foreach (Marker marker in markers)
+        {
+            await currentCanvasContext.SetFillStyleAsync("rgb(195, 12, 12)");
+            await currentCanvasContext.FillRectAsync(
+                marker.XCoords - markRadius, marker.YCoords - markRadius, markRadius * 2, markRadius * 2);
+            await currentCanvasContext.SetFillStyleAsync("rgb(252, 252, 252)");
+            await currentCanvasContext.FillRectAsync(
+                marker.XCoords - markRadius/2, marker.YCoords - markRadius/2, markRadius, markRadius);
+        }
+    }
+}

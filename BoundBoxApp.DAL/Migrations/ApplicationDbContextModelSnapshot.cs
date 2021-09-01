@@ -117,21 +117,21 @@ namespace BoundBoxApp.DAL.Migrations
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                            ConcurrencyStamp = "b9b73cef-deb9-4313-91e2-fb6a84cd4081",
+                            ConcurrencyStamp = "426a287c-6b3e-4724-80ab-80f7bf212f65",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb8",
-                            ConcurrencyStamp = "20e230e9-3eff-45cf-b81a-5becd1183c6e",
+                            ConcurrencyStamp = "d1717909-e17a-4dd7-9171-55becd125392",
                             Name = "Annotator",
                             NormalizedName = "ANNOTATOR"
                         },
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb7",
-                            ConcurrencyStamp = "daf9f372-1f30-46cc-8fff-8b766d12419d",
+                            ConcurrencyStamp = "e94029ee-bd92-4dfe-8417-352a7c4c6def",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -253,16 +253,16 @@ namespace BoundBoxApp.DAL.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "81c33396-63df-46f8-9927-ed92fb397f03",
+                            ConcurrencyStamp = "89b738dc-412b-420b-9edf-fcda8a728ecc",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "Admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEkJrupSYxwQD8VYXQCDltJ+8/igpVgbgfCmyF4STYLfkVOroylANTzxAs1TLokJ6g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPMbHuysHlW0AtRXO7meD+kVXnWRkWEMDdGea2MBHr4tOsUHN39pcoMpxCoUaN3m0g==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "335cf0f5-a19a-4a56-a9cb-ca21b7c8aac4",
+                            SecurityStamp = "6be88a52-5323-4e1f-a44a-83533e451f8d",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         },
@@ -270,16 +270,16 @@ namespace BoundBoxApp.DAL.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c43e6c53-8b9b-439b-be0a-39864a6d094a",
+                            ConcurrencyStamp = "37d298b4-e26f-4ae4-9d14-caee4dce67aa",
                             Email = "annotator@annotator.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ANNOTATOR@ANNOTATOR.COM",
                             NormalizedUserName = "Annotator",
-                            PasswordHash = "AQAAAAEAACcQAAAAEABXjyLIfrC29CUtrexCBPYLecD92dU4VI+rYdsndWYLD7M7qzP8kVSmpZgKnxSPjA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEL3+gmpuELTXJoRikemYEboQ2RROmOTYr7wAzbaQ35vfYbtlVOaHoaT9QaE6iRUu3g==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "c6d9e24b-7c9f-4043-af6f-a5c115f4d29a",
+                            SecurityStamp = "196a33f1-f917-4425-8e76-f754faf3c5c3",
                             TwoFactorEnabled = false,
                             UserName = "Annotator"
                         },
@@ -287,16 +287,16 @@ namespace BoundBoxApp.DAL.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "56e4a6ad-d792-474d-9961-e285447d226b",
+                            ConcurrencyStamp = "98db8910-d830-4098-ad74-be16e8f28277",
                             Email = "user@user.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@USER.COM",
                             NormalizedUserName = "User",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOXan/oL/B0+F98ud9vsMUgqpLnEAsOC7GK+H4F4e3R85vm5jVSyR9+PC9pyRwTvNg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELT6NVs0VuCzXv0KqKW+8dLrRTGqdKeN0C3fhLIdfOAUJtd4V0uWsbtI2rTktcyIhQ==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "7a637d36-bf10-4ffc-b0e9-720fb742d4fd",
+                            SecurityStamp = "06435e42-ba3f-4396-8118-bfed5b3915a6",
                             TwoFactorEnabled = false,
                             UserName = "User"
                         });
@@ -409,14 +409,14 @@ namespace BoundBoxApp.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("AnnotatorId");
 
-                    b.HasOne("BoundBoxApp.Model.Project", "Project")
-                        .WithMany()
+                    b.HasOne("BoundBoxApp.Model.Project", null)
+                        .WithMany("Bounds")
                         .HasForeignKey("ProjectId");
                 });
 
             modelBuilder.Entity("BoundBoxApp.Model.Marker", b =>
                 {
-                    b.HasOne("BoundBoxApp.Model.Bounds", null)
+                    b.HasOne("BoundBoxApp.Model.Bounds", "bounds")
                         .WithMany("Markers")
                         .HasForeignKey("BoundsId");
                 });

@@ -1,0 +1,148 @@
+﻿@using BoundBoxApp.Model;
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using System.Drawing
+@using Microsoft.AspNetCore.Hosting
+@using System.IO
+@inject IJSRuntime jsRuntime
+@inject IWebHostEnvironment environment
+
+<h3>Annotation Preview</h3>
+
+<div class="w-100">
+    <div @ref="divCanvas" id="canvasContainer" class="position-relative"
+         style="background-image:url('@Project.Src');background-size:contain">
+
+        <BECanvas @ref="myCanvas" Width="@width" Height="@height"></BECanvas>
+        <div class="position-absolute p-1 m-2" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity = 0.5;"
+             style="top:50%;left:0;width:50px;border-radius:50%;background-color:#333333;opacity:0.5;cursor:pointer"
+             @onclick='() => OnClick("left")'>
+            <svg xmlns="http://www.w3.org/2000/svg" style="color:#f6f6f6" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
+            </svg>
+        </div>
+        <div class="position-absolute p-1 m-2" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity = 0.5;"
+             style="top:50%;right:0;width:50px;border-radius:50%;background-color:#333333;opacity:0.5;cursor:pointer"
+            @onclick='() => OnClick("right")'>
+            <svg xmlns="http://www.w3.org/2000/svg" style="color:#f6f6f6" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+            </svg>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Model.Project Project { get; set; }
+
+    public List<Marker> markers = new List<Marker>();
+    int curMarkerIndex = 0;
+
+    int width;
+    int height;
+
+    ElementReference divCanvas;
+    Blazor.Extensions.BECanvasComponent myCanvas;
+    Canvas2DContext currentCanvasContext;
+
+    public void OnClick(string direction)
+    {
+        if (direction == "right")
+        {
+            curMarkerIndex++;
+            if (Project.Bounds.Count <= curMarkerIndex)
+            {
+                curMarkerIndex = 0;
+            }
+        }
+        else if (direction == "left")
+        {
+            curMarkerIndex--;
+            if (curMarkerIndex < 0)
+            {
+                curMarkerIndex = Project.Bounds.Count - 1;
+            }
+        }
+
+        markers = Project.Bounds.ToList()[curMarkerIndex].Markers.ToList();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        Bitmap img = new Bitmap(Path.Combine(environment.ContentRootPath, "wwwroot" + Project.Src), false);
+        width = img.Width;
+        height = img.Height;
+
+        markers = null;
+
+        return base.OnInitializedAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        jsRuntime.InvokeVoidAsync("canvasSize", new object[] { width, height });
+
+        if (Project.Bounds == null || Project.Bounds.Count == 0)
+        {
+            return base.OnAfterRenderAsync(firstRender);
+;
+        }
+
+        markers = Project.Bounds.ToList()[curMarkerIndex].Markers.ToList();
+        if (markers.Count == 0)
+        {
+            return base.OnAfterRenderAsync(firstRender);
+;
+        }
+
+        DrawMarkers();
+
+        return base.OnAfterRenderAsync(firstRender);
+
+    }
+
+    private async void DrawMarkers()
+    {
+        int markRadius = width / 160;
+        currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
+
+        await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
+        await RenderLines(markers, markRadius);
+        await RenderMarkers(markers, markRadius);
+    }
+
+    private async Task RenderLines(List<Marker> markers, int markRadius)
+    {
+        await currentCanvasContext.SetFillStyleAsync("rgb(244, 26, 26)");
+        await currentCanvasContext.SetStrokeStyleAsync("rgb(244, 26, 26)");
+        await currentCanvasContext.SetLineWidthAsync(markRadius / 2);
+
+        await currentCanvasContext.BeginPathAsync();
+        await currentCanvasContext.MoveToAsync(markers[0].XCoords, markers[0].YCoords);
+        foreach (Marker marker in markers)
+        {
+            await currentCanvasContext.LineToAsync(marker.XCoords, marker.YCoords);
+        }
+        await currentCanvasContext.ClosePathAsync();
+
+        await currentCanvasContext.SetGlobalAlphaAsync(.5f);
+        await currentCanvasContext.FillAsync();
+        await currentCanvasContext.SetGlobalAlphaAsync(1f);
+        await currentCanvasContext.StrokeAsync();
+    }
+
+
+    private async Task RenderMarkers(List<Marker> markers, int markRadius)
+    {
+        foreach (Marker marker in markers)
+        {
+            await currentCanvasContext.SetFillStyleAsync("rgb(195, 12, 12)");
+            await currentCanvasContext.FillRectAsync(
+                marker.XCoords - markRadius, marker.YCoords - markRadius, markRadius * 2, markRadius * 2);
+            await currentCanvasContext.SetFillStyleAsync("rgb(252, 252, 252)");
+            await currentCanvasContext.FillRectAsync(
+                marker.XCoords - markRadius/2, marker.YCoords - markRadius/2, markRadius, markRadius);
+        }
+    }
+}

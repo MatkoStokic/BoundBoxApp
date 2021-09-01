@@ -42,6 +42,8 @@ namespace BoundBoxApp
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<ProjectService>();
+            services.AddSingleton<BoundService>();
+
             services.AddHttpContextAccessor();
         }
 

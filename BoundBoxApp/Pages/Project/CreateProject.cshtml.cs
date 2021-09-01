@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BoundBoxApp.DAL.Services;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -44,7 +43,6 @@ namespace BoundBoxApp.Pages.Project
             [Display(Name = "Title")]
             public string Title { get; set; }
 
-            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
             [Display(Name = "Category")]
             public string Category { get; set; }
 
@@ -57,22 +55,25 @@ namespace BoundBoxApp.Pages.Project
             public IFormFile Image { get; set; }
         }
 
-        public async Task OnPostAsync()
+        public IActionResult OnPost()
         {
-            var user = await GetUser();
+            string returnUrl = Url.Content("~/project");
+
+            var user = GetUser().Result;
             if (user == null)
             {
-                return;
+                return LocalRedirect(returnUrl);
             }
 
             var id = Guid.NewGuid().ToString();
-            var file = await SaveFile(id);
+            var file = SaveFile(id).Result;
             if (file == null)
             {
-                return;
+                return LocalRedirect(returnUrl);
             }
 
             SaveEntity(id, file, user.Id);
+            return LocalRedirect(returnUrl);
         }
 
         private async Task<IdentityUser> GetUser()
@@ -90,23 +91,23 @@ namespace BoundBoxApp.Pages.Project
                 return null;
             }
             string fileName = guid + "." + contentType[1];
-            var file = Path.Combine(_environment.ContentRootPath, "Uploads", fileName);
+            var file = Path.Combine(_environment.ContentRootPath, "wwwroot/upload", fileName);
             using (var fileStream = new FileStream(file, FileMode.Create))
             {
                 await Input.Image.CopyToAsync(fileStream);
             }
-            return file;
+            return fileName;
         }
 
         private async void SaveEntity(string id, string src, string userId)
         {
-            BoundBoxApp.Model.Project entity = new BoundBoxApp.Model.Project()
+            Model.Project entity = new Model.Project()
             {
                 Id = id,
                 Title = Input.Title,
                 Category = Input.Category,
                 IsForAnnotating = Input.IsForAnnotation,
-                Src = src,
+                Src = "/upload/" + src,
                 OwnerId = userId
             };
 

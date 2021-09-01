@@ -10,6 +10,7 @@
     <title>@ViewData["Title"] - BoundBoxApp</title>
     <link rel="stylesheet" href="~/Identity/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/Identity/css/site.css" />
+    <base href="~/" />
 </head>
 <body>
     <header>
@@ -52,6 +53,11 @@
     <script src="~/Identity/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/Identity/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/Identity/js/site.js" asp-append-version="true"></script>
+    <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
+    <script src="~/js/canvas.js"></script>
+
+    <script src="~/_framework/blazor.server.js"></script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>

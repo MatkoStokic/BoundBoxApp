@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,5 +19,7 @@ namespace BoundBoxApp.Model
         [ForeignKey("User")]
         public string OwnerId { get; set; }
         public IdentityUser Owner { get; set; }
+
+        public ICollection<Bounds> Bounds { get; set; }
     }
 }

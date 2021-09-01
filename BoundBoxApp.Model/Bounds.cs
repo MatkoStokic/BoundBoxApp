@@ -17,7 +17,6 @@ namespace BoundBoxApp.Model
 
         [ForeignKey("Project")]
         public string ProjectId { get; set; }
-        public Project Project { get; set; }
 
 
         public ICollection<Marker> Markers { get; set; }
