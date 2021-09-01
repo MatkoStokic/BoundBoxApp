@@ -8,9 +8,11 @@ using BoundBoxApp.DAL.Services;
 using Microsoft.AspNetCore.Identity;
 using BoundBoxApp.Model;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BoundBoxApp.Pages.Bounds
 {
+    [Authorize(Roles ="Admin, Annotator")]
     public class SolveModel : PageModel
     {
         [ViewData]

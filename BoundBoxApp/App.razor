@@ -4,9 +4,18 @@
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         </Found>
         <NotFound>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p>Sorry, there's nothing at this address.</p>
-            </LayoutView>
+            <AuthorizeView>
+                <Authorized>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                    </LayoutView>
+                </Authorized>
+
+                <NotAuthorized>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <p>Please log in to see content.</p>
+                    </LayoutView>
+                </NotAuthorized>
+            </AuthorizeView>
         </NotFound>
     </Router>
 </CascadingAuthenticationState>

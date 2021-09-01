@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BoundBoxApp.DAL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoundBoxApp
 {
+    [Authorize(Roles = "Admin, User")]
     public class ProjectDetailsModel : PageModel
     {
         private readonly ProjectService _projectService;

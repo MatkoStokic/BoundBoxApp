@@ -398,7 +398,6 @@ C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Ra
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\_StatusMessage.cshtml.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\_ViewImports.cshtml.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Error.cshtml.g.cs
-C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Shared\_LoginPartial.cshtml.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ViewImports.cshtml.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ViewStart.cshtml.g.cs
 C:\Users\DesBelli\Desktop\Zavrsni rad\App\BoundBoxApp\obj\Debug\netcoreapp3.1\Razor\Pages\Shared\_Layout.cshtml.g.cs
