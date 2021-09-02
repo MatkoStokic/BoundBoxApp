@@ -6,10 +6,6 @@ namespace BoundBoxApp.DAL.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameTable(
-                name: "Annotations",
-                newName: "Annotation");
-
             migrationBuilder.DropForeignKey(
                 name: "FK_Marker_Bounds_BoundsId",
                 table: "Marker");
@@ -219,13 +215,9 @@ namespace BoundBoxApp.DAL.Migrations
                 name: "FK_Marker_Bounds_BoundsId",
                 table: "Marker",
                 column: "BoundsId",
-                principalTable: "Annotations",
+                principalTable: "Annotation",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.RenameTable(
-                name: "Annotation",
-                newName: "Annotations");
         }
     }
 }
