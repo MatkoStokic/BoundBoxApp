@@ -27,7 +27,7 @@
 
             <div class="navbar-collapse collapse flex-sm-row-reverse">
                 <ul class="nav flex-column">
-                    @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("User")))
+                    @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("ContentOwner")))
                     {
                         <li class="nav-item px-3">
                             <a class="nav-link" href="project">

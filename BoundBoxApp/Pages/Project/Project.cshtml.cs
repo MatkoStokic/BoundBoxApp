@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoundBoxApp.Pages.Project
 {
-    [Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin, ContentOwner")]
     public class ProjectModel : PageModel
     {
         [ViewData]

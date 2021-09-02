@@ -21,7 +21,7 @@ namespace BoundBoxApp.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BoundBoxApp.Model.Bounds", b =>
+            modelBuilder.Entity("BoundBoxApp.Model.Annotation", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -38,7 +38,7 @@ namespace BoundBoxApp.DAL.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Bounds");
+                    b.ToTable("Annotation");
                 });
 
             modelBuilder.Entity("BoundBoxApp.Model.Marker", b =>
@@ -405,20 +405,20 @@ namespace BoundBoxApp.DAL.Migrations
                     b.ToTable("UserToken");
                 });
 
-            modelBuilder.Entity("BoundBoxApp.Model.Bounds", b =>
+            modelBuilder.Entity("BoundBoxApp.Model.Annotation", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Annotator")
                         .WithMany()
                         .HasForeignKey("AnnotatorId");
 
                     b.HasOne("BoundBoxApp.Model.Project", null)
-                        .WithMany("Bounds")
+                        .WithMany("Annotation")
                         .HasForeignKey("ProjectId");
                 });
 
             modelBuilder.Entity("BoundBoxApp.Model.Marker", b =>
                 {
-                    b.HasOne("BoundBoxApp.Model.Bounds", "bounds")
+                    b.HasOne("BoundBoxApp.Model.Annotation", "bounds")
                         .WithMany("Markers")
                         .HasForeignKey("BoundsId");
                 });

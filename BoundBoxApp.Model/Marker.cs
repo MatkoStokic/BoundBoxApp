@@ -12,6 +12,8 @@ namespace BoundBoxApp.Model
         public double XCoords { get; set; }
         public double YCoords { get; set; }
         public string BoundsId { get; set; }
+
+        public int Order { get; set; }
         
     }
 }

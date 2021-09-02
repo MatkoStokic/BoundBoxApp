@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoundBoxApp.Pages.Project
 {
-    [Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin, ContentOwner")]
     public class CreateProjectModel : PageModel
     {
         private readonly IWebHostEnvironment _environment;
@@ -45,11 +45,10 @@ namespace BoundBoxApp.Pages.Project
             [Display(Name = "Title")]
             public string Title { get; set; }
 
-            [Display(Name = "Category")]
-            public string Category { get; set; }
+            [Display(Name = "Categories")]
+            public string Categories { get; set; }
 
-            [Display(Name = "Is for Annotation")]
-            public bool IsForAnnotation { get; set; }
+            public bool IsForObjectDetection { get; set; }
 
             [Required]
             [DataType(DataType.Upload)]
@@ -74,7 +73,7 @@ namespace BoundBoxApp.Pages.Project
                 return LocalRedirect(returnUrl);
             }
 
-            SaveEntity(id, file, user.Id);
+            SaveEntity(id, file, user.Id).Wait();
             return LocalRedirect(returnUrl);
         }
 
@@ -101,14 +100,14 @@ namespace BoundBoxApp.Pages.Project
             return fileName;
         }
 
-        private async void SaveEntity(string id, string src, string userId)
+        private async Task SaveEntity(string id, string src, string userId)
         {
             Model.Project entity = new Model.Project()
             {
                 Id = id,
                 Title = Input.Title,
-                Category = Input.Category,
-                IsForAnnotating = Input.IsForAnnotation,
+                Categories = Input.Categories,
+                IsForObjectDetection = Input.IsForObjectDetection,
                 Src = "/upload/" + src,
                 OwnerId = userId
             };

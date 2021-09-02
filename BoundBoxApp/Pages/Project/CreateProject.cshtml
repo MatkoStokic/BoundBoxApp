@@ -13,14 +13,14 @@
                 <span asp-validation-for="Input.Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Category"></label>
-                <input asp-for="Input.Category" class="form-control" />
-                <span asp-validation-for="Input.Category" class="text-danger"></span>
+                <label asp-for="Input.Categories"></label>
+                <input asp-for="Input.Categories" class="form-control" />
+                <span asp-validation-for="Input.Categories" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.IsForAnnotation"></label>
-                <input asp-for="Input.IsForAnnotation" class="form-control" />
-                <span asp-validation-for="Input.IsForAnnotation" class="text-danger"></span>
+                <label asp-for="Input.IsForObjectDetection"> Check for Object Detection or leave unchecked for Classification</label>
+                <input asp-for="Input.IsForObjectDetection" class="form-control" style="max-width:40px" />
+                <span asp-validation-for="Input.IsForObjectDetection" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Image"></label>

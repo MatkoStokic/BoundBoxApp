@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BoundBoxApp.DAL.Services;
+using BoundBoxApp.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoundBoxApp
 {
-    [Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin, ContentOwner")]
     public class ProjectDetailsModel : PageModel
     {
         private readonly ProjectService _projectService;
@@ -47,11 +48,10 @@ namespace BoundBoxApp
             [Display(Name = "Title")]
             public string Title { get; set; }
 
-            [Display(Name = "Category")]
-            public string Category { get; set; }
+            [Display(Name = "Categories")]
+            public string Categories { get; set; }
 
-            [Display(Name = "Is for Annotation")]
-            public bool IsForAnnotation { get; set; }
+            public bool IsForObjectDetection { get; set; }
 
             [DataType(DataType.Upload)]
             [Display(Name = "Image")]
@@ -69,32 +69,34 @@ namespace BoundBoxApp
             Input = new InputModel
             {
                 Title = Project.Title,
-                Category = Project.Category,
-                IsForAnnotation = Project.IsForAnnotating
+                Categories = Project.Categories,
+                IsForObjectDetection = Project.IsForObjectDetection
             };
         }
 
-        public async Task<IActionResult> OnPostAsync(string projectId)
+        public IActionResult OnPost(string projectId)
         {
             string returnUrl = "~/project";
             IdentityUser user = GetUser().Result;
-            if (Project == null || user != Project.Owner )
+            Project = _projectService.GetProjectAsync(projectId).Result;
+
+            if (Project == null || user.Id != Project.Owner.Id )
             {
                 return LocalRedirect(returnUrl);
             }
 
             Project.Title = Input.Title;
-            Project.Category = Input.Category;
-            Project.IsForAnnotating = Input.IsForAnnotation;
+            Project.Categories = Input.Categories;
+            Project.IsForObjectDetection = Input.IsForObjectDetection;
 
             if (Input.Image != null)
             {
-                string src = await SaveFile(Guid.NewGuid().ToString());
+                string src = SaveFile(Guid.NewGuid().ToString()).Result;
                 DeleteFile(Project.Src);
                 Project.Src = "/upload/" + src;
             }
 
-            UpdateEntity(Project);
+            UpdateEntity(Project).Wait();
             return LocalRedirect(returnUrl);
         }
 
@@ -127,9 +129,9 @@ namespace BoundBoxApp
             System.IO.File.Delete(file);
         }
 
-        private async void UpdateEntity(Model.Project project)
+        private async Task UpdateEntity(Model.Project project)
         {
-            var saved = await _projectService.InsertProjectAsync(project);
+            var saved = await _projectService.UpdateProjectAsync(project);
             if (saved)
             {
                 _logger.LogInformation("Updated project {0}", project);

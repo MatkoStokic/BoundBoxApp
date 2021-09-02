@@ -51,12 +51,12 @@ namespace BoundBoxApp.DAL.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "AnnotatorId",
-                table: "Bounds",
+                table: "Annotation",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "ProjectId",
-                table: "Bounds",
+                table: "Annotation",
                 nullable: true);
 
             migrationBuilder.UpdateData(
@@ -113,17 +113,17 @@ namespace BoundBoxApp.DAL.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bounds_AnnotatorId",
-                table: "Bounds",
+                table: "Annotation",
                 column: "AnnotatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bounds_ProjectId",
-                table: "Bounds",
+                table: "Annotation",
                 column: "ProjectId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Bounds_User_AnnotatorId",
-                table: "Bounds",
+                table: "Annotation",
                 column: "AnnotatorId",
                 principalTable: "User",
                 principalColumn: "Id",
@@ -131,7 +131,7 @@ namespace BoundBoxApp.DAL.Migrations
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Bounds_Project_ProjectId",
-                table: "Bounds",
+                table: "Annotation",
                 column: "ProjectId",
                 principalTable: "Project",
                 principalColumn: "Id",
@@ -141,7 +141,7 @@ namespace BoundBoxApp.DAL.Migrations
                 name: "FK_Marker_Bounds_BoundsId",
                 table: "Marker",
                 column: "BoundsId",
-                principalTable: "Bounds",
+                principalTable: "Annotation",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
@@ -158,11 +158,11 @@ namespace BoundBoxApp.DAL.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Bounds_User_AnnotatorId",
-                table: "Bounds");
+                table: "Annotation");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Bounds_Project_ProjectId",
-                table: "Bounds");
+                table: "Annotation");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Marker_Bounds_BoundsId",
@@ -182,11 +182,11 @@ namespace BoundBoxApp.DAL.Migrations
 
             migrationBuilder.DropIndex(
                 name: "IX_Bounds_AnnotatorId",
-                table: "Bounds");
+                table: "Annotation");
 
             migrationBuilder.DropIndex(
                 name: "IX_Bounds_ProjectId",
-                table: "Bounds");
+                table: "Annotation");
 
             migrationBuilder.DropColumn(
                 name: "Category",
@@ -222,11 +222,11 @@ namespace BoundBoxApp.DAL.Migrations
 
             migrationBuilder.DropColumn(
                 name: "AnnotatorId",
-                table: "Bounds");
+                table: "Annotation");
 
             migrationBuilder.DropColumn(
                 name: "ProjectId",
-                table: "Bounds");
+                table: "Annotation");
 
             migrationBuilder.UpdateData(
                 table: "Role",

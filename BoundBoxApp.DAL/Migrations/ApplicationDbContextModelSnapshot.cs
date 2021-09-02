@@ -19,13 +19,19 @@ namespace BoundBoxApp.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BoundBoxApp.Model.Bounds", b =>
+            modelBuilder.Entity("BoundBoxApp.Model.Annotation", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AnnotatorId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsObjectDetection")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ProjectId")
                         .HasColumnType("nvarchar(450)");
@@ -36,7 +42,7 @@ namespace BoundBoxApp.DAL.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Bounds");
+                    b.ToTable("Annotation");
                 });
 
             modelBuilder.Entity("BoundBoxApp.Model.Marker", b =>
@@ -44,8 +50,14 @@ namespace BoundBoxApp.DAL.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BoundsId")
+                    b.Property<string>("AnnotationId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BoundsId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
 
                     b.Property<double>("XCoords")
                         .HasColumnType("float");
@@ -55,7 +67,7 @@ namespace BoundBoxApp.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BoundsId");
+                    b.HasIndex("AnnotationId");
 
                     b.ToTable("Marker");
                 });
@@ -65,10 +77,10 @@ namespace BoundBoxApp.DAL.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Category")
+                    b.Property<string>("Categories")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsForAnnotating")
+                    b.Property<bool>("IsForObjectDetection")
                         .HasColumnType("bit");
 
                     b.Property<string>("OwnerId")
@@ -117,23 +129,23 @@ namespace BoundBoxApp.DAL.Migrations
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
-                            ConcurrencyStamp = "426a287c-6b3e-4724-80ab-80f7bf212f65",
+                            ConcurrencyStamp = "6e742c74-41b0-4f7d-822d-5539d6d59905",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb8",
-                            ConcurrencyStamp = "d1717909-e17a-4dd7-9171-55becd125392",
+                            ConcurrencyStamp = "5738708a-97f8-48ba-af44-890c91bee9ed",
                             Name = "Annotator",
                             NormalizedName = "ANNOTATOR"
                         },
                         new
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb7",
-                            ConcurrencyStamp = "e94029ee-bd92-4dfe-8417-352a7c4c6def",
-                            Name = "User",
-                            NormalizedName = "USER"
+                            ConcurrencyStamp = "a8546ed9-79ac-481b-9b3f-3d8d3c2200bc",
+                            Name = "ContentOwner",
+                            NormalizedName = "CONTENTOWNER"
                         });
                 });
 
@@ -253,16 +265,16 @@ namespace BoundBoxApp.DAL.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "89b738dc-412b-420b-9edf-fcda8a728ecc",
+                            ConcurrencyStamp = "266be7d3-4b21-4e54-b128-658a64256d52",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "Admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPMbHuysHlW0AtRXO7meD+kVXnWRkWEMDdGea2MBHr4tOsUHN39pcoMpxCoUaN3m0g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDAAJB/4S2P+e+lSu/wQY87LfKPb9FNf1y6jkcJl8/SDrtAn9Oi1QDGFiSoKVeuFbw==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "6be88a52-5323-4e1f-a44a-83533e451f8d",
+                            SecurityStamp = "3b69379f-9847-4a5a-b518-44bef5a5cd7a",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         },
@@ -270,16 +282,16 @@ namespace BoundBoxApp.DAL.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "37d298b4-e26f-4ae4-9d14-caee4dce67aa",
+                            ConcurrencyStamp = "02152fe1-c4fc-4215-adc8-08c9dae5ff4b",
                             Email = "annotator@annotator.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ANNOTATOR@ANNOTATOR.COM",
                             NormalizedUserName = "Annotator",
-                            PasswordHash = "AQAAAAEAACcQAAAAEL3+gmpuELTXJoRikemYEboQ2RROmOTYr7wAzbaQ35vfYbtlVOaHoaT9QaE6iRUu3g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEM96qSPRFoJfzPlYoUWGcl5kDHqP8V7N3nmYckbT+zLOVBvd6jIRS/IjVBt58FgeEg==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "196a33f1-f917-4425-8e76-f754faf3c5c3",
+                            SecurityStamp = "f7ce3d43-bf87-4b7d-aa8e-c0599ee4fc0a",
                             TwoFactorEnabled = false,
                             UserName = "Annotator"
                         },
@@ -287,16 +299,16 @@ namespace BoundBoxApp.DAL.Migrations
                         {
                             Id = "8e445865-a24d-4543-a6c6-9443d048cdb7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "98db8910-d830-4098-ad74-be16e8f28277",
+                            ConcurrencyStamp = "db536b12-64ff-43e7-ba70-ab4cca6aee55",
                             Email = "user@user.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@USER.COM",
                             NormalizedUserName = "User",
-                            PasswordHash = "AQAAAAEAACcQAAAAELT6NVs0VuCzXv0KqKW+8dLrRTGqdKeN0C3fhLIdfOAUJtd4V0uWsbtI2rTktcyIhQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGwQav/nWcdb8Px+HBvalRE2F0iAVeaA8VRjEl/0y1e91qpmG+tL8uHVyD+tV2swVg==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = true,
-                            SecurityStamp = "06435e42-ba3f-4396-8118-bfed5b3915a6",
+                            SecurityStamp = "beef6b8c-69e4-4e2c-b6f4-cf84ed3fd0a9",
                             TwoFactorEnabled = false,
                             UserName = "User"
                         });
@@ -403,22 +415,22 @@ namespace BoundBoxApp.DAL.Migrations
                     b.ToTable("UserToken");
                 });
 
-            modelBuilder.Entity("BoundBoxApp.Model.Bounds", b =>
+            modelBuilder.Entity("BoundBoxApp.Model.Annotation", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Annotator")
                         .WithMany()
                         .HasForeignKey("AnnotatorId");
 
                     b.HasOne("BoundBoxApp.Model.Project", null)
-                        .WithMany("Bounds")
+                        .WithMany("Annotations")
                         .HasForeignKey("ProjectId");
                 });
 
             modelBuilder.Entity("BoundBoxApp.Model.Marker", b =>
                 {
-                    b.HasOne("BoundBoxApp.Model.Bounds", "bounds")
+                    b.HasOne("BoundBoxApp.Model.Annotation", null)
                         .WithMany("Markers")
-                        .HasForeignKey("BoundsId");
+                        .HasForeignKey("AnnotationId");
                 });
 
             modelBuilder.Entity("BoundBoxApp.Model.Project", b =>

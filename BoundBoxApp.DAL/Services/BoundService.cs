@@ -18,57 +18,69 @@ namespace BoundBoxApp.DAL.Services
             _context = context;
         }
 
-        public async Task<List<Bounds>> GetPBoundsByUserAsync(string entityId)
+        public List<Annotation> GetPBoundsByUserAsync(string entityId)
         {
-            return await _context.Bounds
+            var entities = _context.Annotations
                 .Where(bounds => bounds.AnnotatorId == entityId)
                 .Include(bounds => bounds.Markers)
-                .Include(bounds => bounds.Annotator).ToListAsync();
+                .Include(bounds => bounds.Annotator).ToList();
+            entities.ForEach(e => e.Markers = 
+                e.Markers.OrderBy(m => m.Order).ToList());
+            return entities;
         }
 
-        public async Task<List<Bounds>> GetBoundsByProjectAsync(string projectId)
+        public List<Annotation> GetBoundsByProjectAsync(string projectId)
         {
-            return await _context.Bounds
+            var entities = _context.Annotations
                 .Where(bounds => bounds.ProjectId == projectId)
                 .Include(bounds => bounds.Markers)
-                .Include(bounds => bounds.Annotator).ToListAsync();
+                .Include(bounds => bounds.Annotator).ToList();
+            entities.ForEach(e => e.Markers =
+                e.Markers.OrderBy(m => m.Order).ToList());
+            return entities;
         }
 
-        public async Task<bool> InsertBoundsAsync(Bounds entity)
+        public async Task<bool> InsertBoundsAsync(Annotation entity)
         {
-            await _context.Bounds.AddAsync(entity);
-            List<Marker> markers = entity.Markers.ToList();
-            markers.ForEach(m => m.BoundsId = entity.Id);
-            await _context.Markers.AddRangeAsync(markers);
+            await _context.Annotations.AddAsync(entity);
+
+            if (entity.Markers != null)
+            {
+                List<Marker> markers = entity.Markers.ToList();
+                markers.ForEach(m => m.BoundsId = entity.Id);
+                await _context.Markers.AddRangeAsync(markers);
+            }
+            
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<Bounds> GetBoundstAsync(string Id)
+        public Annotation GetBoundstAsync(string Id)
         {
-            return await _context.Bounds
-                .Include(bounds => bounds.Markers)
-                .Include(bounds => bounds.Annotator)
-                .FirstOrDefaultAsync(c => c.Id.Equals(Id));
+            var entity = _context.Annotations
+               .Include(bounds => bounds.Markers)
+               .Include(bounds => bounds.Annotator).FirstOrDefault(c => c.Id.Equals(Id));
+            entity.Markers = entity.Markers.OrderBy(m => m.Order).ToList();
+            return entity;
         }
 
-        public async Task<bool> UpdateBoundsAsync(Bounds entity)
+        public async Task<bool> UpdateBoundsAsync(Annotation entity)
         {
-            _context.Bounds.Update(entity);
+            _context.Annotations.Update(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> DeleteBoundsAsync(Bounds entity)
+        public async Task<bool> DeleteBoundsAsync(Annotation entity)
         {
-            _context.Bounds.Remove(entity);
+            _context.Annotations.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public bool IsSolved(string userId, string projectId)
         {
-            var bounds = _context.Bounds
+            var bounds = _context.Annotations
                 .Where(bounds => bounds.AnnotatorId == userId 
                     && bounds.ProjectId == projectId)
                 .FirstOrDefault();
@@ -84,7 +96,7 @@ namespace BoundBoxApp.DAL.Services
         public List<string> GetSolved(string userId)
         {
             List<string> solved = new List<string>();
-            _context.Bounds
+            _context.Annotations
                 .Where(bounds => bounds.AnnotatorId == userId)
                 .ToList()
                 .ForEach(bounds => solved.Add(bounds.ProjectId));

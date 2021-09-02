@@ -12,14 +12,14 @@ namespace BoundBoxApp.Model
         public string Id { get; set; }
         public string Src { get; set; }
         public string Title { get; set; }
-        public string Category { get; set; }
-        public bool IsForAnnotating { get; set; }
+        public string Categories { get; set; }
+        public bool IsForObjectDetection { get; set; }
 
 
         [ForeignKey("User")]
         public string OwnerId { get; set; }
         public IdentityUser Owner { get; set; }
 
-        public ICollection<Bounds> Bounds { get; set; }
+        public ICollection<Annotation> Annotations { get; set; }
     }
 }

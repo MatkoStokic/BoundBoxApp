@@ -28,10 +28,7 @@ namespace BoundBoxApp.DAL.Services
                 .Include(project => project.Owner)
                 .Where(p => p.OwnerId == userId)
                 .ToListAsync();
-            foreach (Project project in projects)
-            {
-                project.Bounds = await _boundService.GetBoundsByProjectAsync(project.Id);
-            }
+           
             return projects;
         }
 
@@ -41,21 +38,20 @@ namespace BoundBoxApp.DAL.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> UpdateProjectAsync(Project entity)
+        {
+            _context.Projects.Update(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public async Task<Project> GetProjectAsync(string Id)
         {
             Project project = await _context.Projects
                 .Include(project => project.Owner)
                 .FirstOrDefaultAsync(c => c.Id.Equals(Id));
-            project.Bounds = await _boundService.GetBoundsByProjectAsync(project.Id);
+            project.Annotations = _boundService.GetBoundsByProjectAsync(project.Id);
             return project;
-        }
-
-        public async Task<bool> UpdateProjectAsync(Project entity)
-        {
-            _context.Projects.Update(entity);
-            await _context.SaveChangesAsync();
-            return true;
         }
 
         public async Task<bool> DeleteProjectAsync(Project entity)
@@ -69,12 +65,9 @@ namespace BoundBoxApp.DAL.Services
         {
             List<Project> projects = await _context.Projects
                 .Include(project => project.Owner)
-                .Where(p => !solved.Contains(p.Id) && p.IsForAnnotating)
+                .Where(p => !solved.Contains(p.Id) && p.IsForObjectDetection)
                 .ToListAsync();
-            foreach (Project project in projects)
-            {
-                project.Bounds = await _boundService.GetBoundsByProjectAsync(project.Id);
-            }
+            
             return projects;
         }
 
@@ -82,12 +75,9 @@ namespace BoundBoxApp.DAL.Services
         {
             List<Project> projects = await _context.Projects
                 .Include(project => project.Owner)
-                .Where(p => !solved.Contains(p.Id) && !p.IsForAnnotating)
+                .Where(p => !solved.Contains(p.Id) && !p.IsForObjectDetection)
                 .ToListAsync();
-            foreach (Project project in projects)
-            {
-                project.Bounds = await _boundService.GetBoundsByProjectAsync(project.Id);
-            }
+            
             return projects;
         }
     }

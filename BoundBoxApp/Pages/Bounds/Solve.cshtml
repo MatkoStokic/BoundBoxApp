@@ -5,8 +5,8 @@
 
 <h2>Annotate</h2>
 <div>
-    <a class="btn btn-secondary p-2 mr-2" href="/solve/marking">New Image for Marking</a>
-    <a class="btn btn-secondary p-2" href="/solve/category">New Image for Naming Category</a>
+    <a class="btn btn-secondary p-2 mr-2" href="/solve/marking">New Image for Object Detection</a>
+    <a class="btn btn-secondary p-2" href="/solve/category">New Image for Classification</a>
 </div>
 
 
@@ -14,19 +14,46 @@
 {
     var project = ViewData["Project"] as Project;
 
-    <h3>Title: @project.Title</h3>
-    <p>Category: @project.Category</p>
-    <br />
+    @if (project.IsForObjectDetection)
+    {
+        <h3>Title: @project.Title</h3>
+        <p>Category: @ViewData["Category"]</p>
+        <br />
 
-    @(await Html.RenderComponentAsync<AnnotationCanvas>(RenderMode.Server, new { ImageSrc = project.Src }))
+        @(await Html.RenderComponentAsync<AnnotationCanvas>(RenderMode.Server, new { ImageSrc = project.Src }))
 
-    <form method="post" asp-route-returnUrl="/solove">
-        <input asp-for="Input.ProjectId" type="hidden" value="@project.Id" />
-        <button type="submit" class="btn btn-primary my-2">Submit Annotation</button>
-    </form>
+        <form method="post" asp-route-returnUrl="/solve">
+            <input asp-for="Input.ProjectId" type="hidden" value="@project.Id" />
+            <input asp-for="Input.Category" type="hidden" value="@ViewData["Category"]" />
+
+            <button type="submit" class="btn btn-primary my-2">Submit Annotation</button>
+        </form>
+    }
+    @if (!project.IsForObjectDetection)
+    {
+        <h3>Title: @project.Title</h3>
+        <br />
+
+        <div class="w-100 mb-2">
+            <img src="@project.Src" class="w-100"/>
+        </div>
+
+        <form method="post" asp-route-returnUrl="/solve">
+            <input asp-for="Input.ProjectId" type="hidden" value="@project.Id" />
+            <select asp-for="Input.Category" class="form-control" required>
+                @foreach ( string category in @ViewData["Categories"] as List<string>)
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+
+            <button type="submit" class="btn btn-primary my-2">Submit Annotation</button>
+        </form>
+    }
+
 }
 @if (ViewData["Project"] == null && Model.IsFetched)
-{ 
+{
     <p>No projects found</p>
 }
 

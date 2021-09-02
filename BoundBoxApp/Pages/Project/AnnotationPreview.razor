@@ -8,9 +8,15 @@
 @inject IJSRuntime jsRuntime
 @inject IWebHostEnvironment environment
 
-<h3>Annotation Preview</h3>
+<h3 class="mt-3">Annotation Preview</h3>
 
-<div class="w-100">
+@if (curAnnotation != null)
+{
+    <h4>Type: @type</h4>
+    <span>Category: @curAnnotation.Category</span>
+}
+
+<div class="w-100 my-3">
     <div @ref="divCanvas" id="canvasContainer" class="position-relative"
          style="background-image:url('@Project.Src');background-size:contain">
 
@@ -24,7 +30,7 @@
         </div>
         <div class="position-absolute p-1 m-2" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity = 0.5;"
              style="top:50%;right:0;width:50px;border-radius:50%;background-color:#333333;opacity:0.5;cursor:pointer"
-            @onclick='() => OnClick("right")'>
+             @onclick='() => OnClick("right")'>
             <svg xmlns="http://www.w3.org/2000/svg" style="color:#f6f6f6" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
                 <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
             </svg>
@@ -36,7 +42,8 @@
     [Parameter]
     public Model.Project Project { get; set; }
 
-    public List<Marker> markers = new List<Marker>();
+    public Annotation curAnnotation;
+    public string type;
     int curMarkerIndex = 0;
 
     int width;
@@ -51,7 +58,7 @@
         if (direction == "right")
         {
             curMarkerIndex++;
-            if (Project.Bounds.Count <= curMarkerIndex)
+            if (Project.Annotations.Count <= curMarkerIndex)
             {
                 curMarkerIndex = 0;
             }
@@ -61,11 +68,20 @@
             curMarkerIndex--;
             if (curMarkerIndex < 0)
             {
-                curMarkerIndex = Project.Bounds.Count - 1;
+                curMarkerIndex = Project.Annotations.Count - 1;
             }
         }
 
-        markers = Project.Bounds.ToList()[curMarkerIndex].Markers.ToList();
+        curAnnotation = Project.Annotations.ToList()[curMarkerIndex];
+
+        if (curAnnotation.IsObjectDetection)
+        {
+            type = "Object Detection";
+        }
+        else
+        {
+            type = "Classification";
+        }       
     }
 
     protected override Task OnInitializedAsync()
@@ -74,7 +90,22 @@
         width = img.Width;
         height = img.Height;
 
-        markers = null;
+        curAnnotation = null;
+        type = null;
+        if (Project.Annotations.Count > 0)
+        {
+            curAnnotation = Project.Annotations.ToList()[0];
+
+            if (curAnnotation.IsObjectDetection)
+            {
+                type = "Object Detection";
+            }
+            else
+            {
+                type = "Classification";
+            }
+        }
+
 
         return base.OnInitializedAsync();
     }
@@ -83,18 +114,11 @@
     {
         jsRuntime.InvokeVoidAsync("canvasSize", new object[] { width, height });
 
-        if (Project.Bounds == null || Project.Bounds.Count == 0)
+        if (Project.Annotations == null || Project.Annotations.Count == 0)
         {
             return base.OnAfterRenderAsync(firstRender);
-;
         }
 
-        markers = Project.Bounds.ToList()[curMarkerIndex].Markers.ToList();
-        if (markers.Count == 0)
-        {
-            return base.OnAfterRenderAsync(firstRender);
-;
-        }
 
         DrawMarkers();
 
@@ -102,14 +126,20 @@
 
     }
 
+
     private async void DrawMarkers()
     {
         int markRadius = width / 160;
         currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
 
         await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
-        await RenderLines(markers, markRadius);
-        await RenderMarkers(markers, markRadius);
+
+        if (curAnnotation.Markers != null && curAnnotation.Markers.Count > 0)
+        {
+            await RenderLines(curAnnotation.Markers.ToList(), markRadius);
+            await RenderMarkers(curAnnotation.Markers.ToList(), markRadius);
+        }
+
     }
 
     private async Task RenderLines(List<Marker> markers, int markRadius)
@@ -142,7 +172,7 @@
                 marker.XCoords - markRadius, marker.YCoords - markRadius, markRadius * 2, markRadius * 2);
             await currentCanvasContext.SetFillStyleAsync("rgb(252, 252, 252)");
             await currentCanvasContext.FillRectAsync(
-                marker.XCoords - markRadius/2, marker.YCoords - markRadius/2, markRadius, markRadius);
+                marker.XCoords - markRadius / 2, marker.YCoords - markRadius / 2, markRadius, markRadius);
         }
     }
 }

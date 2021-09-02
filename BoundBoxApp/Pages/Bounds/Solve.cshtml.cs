@@ -18,6 +18,10 @@ namespace BoundBoxApp.Pages.Bounds
         [ViewData]
         public Model.Project Project { get; set; }
         public bool IsFetched { get; set; } = false;
+        [ViewData]
+        public string Category { get; set; }
+        [ViewData]
+        public List<string> Categories { get; set; }
 
         private readonly BoundService _boundService;
         private readonly ProjectService _projectService;
@@ -103,6 +107,14 @@ namespace BoundBoxApp.Pages.Bounds
                 return;
             }
             Project = _boundService.GetRandomProject(projects);
+            Category = getRandomCategory();
+        }
+
+        private string getRandomCategory()
+        {
+            var categories = Project.Categories.Split(", ");
+            Random rand = new Random();
+            return categories[rand.Next(0, categories.Length)];
         }
 
         public void FetchForCategory()
@@ -116,16 +128,20 @@ namespace BoundBoxApp.Pages.Bounds
             }
 
             Project = _boundService.GetRandomProject(projects);
+            Categories = Project.Categories.Split(", ").ToList();
+
         }
 
         public async Task CreateForMarking(string userId, string id)
         {
             List<Marker> markers = SaveMarker();
-            Model.Bounds entity = new Model.Bounds()
+            Model.Annotation entity = new Model.Annotation()
             {
                 Id = id,
                 AnnotatorId = userId,
                 ProjectId = Input.ProjectId,
+                Category = Input.Category,
+                IsObjectDetection = true,
                 Markers = markers
             };
 
@@ -142,7 +158,24 @@ namespace BoundBoxApp.Pages.Bounds
 
         public async Task CreateForCategory(string userId, string id)
         {
+            Model.Annotation entity = new Model.Annotation()
+            {
+                Id = id,
+                AnnotatorId = userId,
+                ProjectId = Input.ProjectId,
+                Category = Input.Category,
+                IsObjectDetection = false
+            };
 
+            var saved = await _boundService.InsertBoundsAsync(entity);
+            if (saved)
+            {
+                _logger.LogInformation("Created new bounds {0}", entity);
+            }
+            else
+            {
+                _logger.LogInformation("Faild to create bounds {0}", entity);
+            }
         }
 
 
@@ -155,11 +188,15 @@ namespace BoundBoxApp.Pages.Bounds
 
         private List<Marker> SaveMarker()
         {
-            foreach (Marker marker in AnnotationCanvas.markers) {
-                marker.Id = Guid.NewGuid().ToString();
+            List<Marker> markers = AnnotationCanvas.markers.ToList();
+            for ( int i = 0; i < markers.Count; i++)
+            {
+                markers[i].Id = Guid.NewGuid().ToString();
+                markers[i].Order = i;
             }
+            
 
-            return AnnotationCanvas.markers;
+            return markers;
         }
     }
 }

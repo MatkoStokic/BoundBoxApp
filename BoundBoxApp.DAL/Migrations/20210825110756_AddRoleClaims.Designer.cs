@@ -21,14 +21,14 @@ namespace BoundBoxApp.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BoundBoxApp.Model.Bounds", b =>
+            modelBuilder.Entity("BoundBoxApp.Model.Annotation", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Bounds");
+                    b.ToTable("Annotation");
                 });
 
             modelBuilder.Entity("BoundBoxApp.Model.Marker", b =>

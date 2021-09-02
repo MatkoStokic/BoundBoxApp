@@ -111,7 +111,7 @@ namespace BoundBoxApp.DAL.Migrations
                 column: "Id");
 
             migrationBuilder.CreateTable(
-                name: "Bounds",
+                name: "Annotation",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false)
@@ -261,7 +261,7 @@ namespace BoundBoxApp.DAL.Migrations
                 table: "UserRole");
 
             migrationBuilder.DropTable(
-                name: "Bounds");
+                name: "Annotation");
 
             migrationBuilder.DropTable(
                 name: "Marker");
