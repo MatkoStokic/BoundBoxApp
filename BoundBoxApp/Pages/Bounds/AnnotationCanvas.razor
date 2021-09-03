@@ -80,8 +80,12 @@
             currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
 
             await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
-            await RenderLines(markers, markRadius);
-            await RenderMarkers(markers, markRadius);
+            if (markers != null && markers.Count > 0)
+            {
+                await RenderLines(markers, markRadius);
+                await RenderMarkers(markers, markRadius);
+            }
+
             processing = false;
         }
     }
