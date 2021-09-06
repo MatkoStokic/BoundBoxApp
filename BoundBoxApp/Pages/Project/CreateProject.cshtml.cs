@@ -45,6 +45,7 @@ namespace BoundBoxApp.Pages.Project
             [Display(Name = "Title")]
             public string Title { get; set; }
 
+            [Required]
             [Display(Name = "Categories")]
             public string Categories { get; set; }
 

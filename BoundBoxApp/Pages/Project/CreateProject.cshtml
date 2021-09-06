@@ -24,10 +24,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="Input.Image"></label>
-                <input asp-for="Input.Image" />
+                <input asp-for="Input.Image" class="form-control-file" />
                 <span asp-validation-for="Input.Image" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-primary">Create New Project</button>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
