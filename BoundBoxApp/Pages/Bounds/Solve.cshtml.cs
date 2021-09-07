@@ -19,8 +19,6 @@ namespace BoundBoxApp.Pages.Bounds
         public Model.Project Project { get; set; }
         public bool IsFetched { get; set; } = false;
         [ViewData]
-        public string Category { get; set; }
-        [ViewData]
         public List<string> Categories { get; set; }
 
         private readonly BoundService _boundService;
@@ -78,15 +76,13 @@ namespace BoundBoxApp.Pages.Bounds
                 return LocalRedirect(returnUrl);
             }
 
-            var id = Guid.NewGuid().ToString();
-
             if (type == "marking")
             {
-                CreateForMarking(user.Id, id).Wait();
+                CreateForMarking(user.Id).Wait();
             }
             else if (type == "category")
             {
-                CreateForCategory(user.Id, id).Wait();
+                CreateForCategory(user.Id).Wait();
             }
 
             return LocalRedirect(returnUrl);
@@ -107,14 +103,8 @@ namespace BoundBoxApp.Pages.Bounds
                 return;
             }
             Project = _boundService.GetRandomProject(projects);
-            Category = getRandomCategory();
-        }
+            Categories = Project.Categories.Split(", ").ToList();
 
-        private string getRandomCategory()
-        {
-            var categories = Project.Categories.Split(", ");
-            Random rand = new Random();
-            return categories[rand.Next(0, categories.Length)];
         }
 
         public void FetchForCategory()
@@ -132,35 +122,40 @@ namespace BoundBoxApp.Pages.Bounds
 
         }
 
-        public async Task CreateForMarking(string userId, string id)
+        public async Task CreateForMarking(string userId)
         {
-            List<Marker> markers = SaveMarker();
-            Model.Annotation entity = new Model.Annotation()
+            Dictionary<string, List<Marker>> annotations = AnnotationCanvas.annotations;
+            foreach (string key in annotations.Keys)
             {
-                Id = id,
-                AnnotatorId = userId,
-                ProjectId = Input.ProjectId,
-                Category = Input.Category,
-                IsObjectDetection = true,
-                Markers = markers
-            };
+                List<Marker> markers = SaveMarker(annotations[key]);
+                Model.Annotation entity = new Model.Annotation()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    AnnotatorId = userId,
+                    ProjectId = Input.ProjectId,
+                    Category = key,
+                    IsObjectDetection = true,
+                    Markers = markers
+                };
 
-            var saved = await _boundService.InsertBoundsAsync(entity);
-            if (saved)
-            {
-                _logger.LogInformation("Created new bounds {0}", entity);
+                var saved = await _boundService.InsertBoundsAsync(entity);
+                if (saved)
+                {
+                    _logger.LogInformation("Created new bounds {0}", entity);
+                }
+                else
+                {
+                    _logger.LogInformation("Faild to create bounds {0}", entity);
+                }
             }
-            else
-            {
-                _logger.LogInformation("Faild to create bounds {0}", entity);
-            }
+            
         }
 
-        public async Task CreateForCategory(string userId, string id)
+        public async Task CreateForCategory(string userId)
         {
             Model.Annotation entity = new Model.Annotation()
             {
-                Id = id,
+                Id = Guid.NewGuid().ToString(),
                 AnnotatorId = userId,
                 ProjectId = Input.ProjectId,
                 Category = Input.Category,
@@ -186,9 +181,8 @@ namespace BoundBoxApp.Pages.Bounds
             return user;
         }
 
-        private List<Marker> SaveMarker()
-        {
-            List<Marker> markers = AnnotationCanvas.markers.ToList();
+        private List<Marker> SaveMarker(List<Marker> markers)
+        {        
             for ( int i = 0; i < markers.Count; i++)
             {
                 markers[i].Id = Guid.NewGuid().ToString();

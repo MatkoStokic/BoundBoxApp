@@ -10,6 +10,18 @@
 @inject IJSRuntime jsRuntime
 @inject IWebHostEnvironment environment
 
+<form>
+    <select @bind="curCategory" @bind:event="oninput" @onchange="CategoryChange">
+        @foreach (string category in Categories)
+        {
+            <option value="@category">
+                @category
+            </option>
+        }
+    </select>
+</form>
+<br />
+
 <div class="w-100">
     <div @ref="divCanvas" oncontextmenu="return false;" @onmouseup="OnClick" id="canvasContainer"
          style="background-image:url('@ImageSrc');background-size:contain">
@@ -23,6 +35,11 @@
 @code {
     [Parameter]
     public string ImageSrc { get; set; }
+    [Parameter]
+    public List<string> Categories { get; set; }
+
+    private string curCategory;
+    public static Dictionary<string, List<Marker>> annotations = new Dictionary<string, List<Marker>>();
 
     public static List<Marker> markers = new List<Marker>();
     private static bool processing = false;
@@ -90,6 +107,23 @@
         }
     }
 
+    async void CategoryChange()
+    {
+        processing = true;
+
+        int markRadius = width / 160;
+
+        await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
+        if (markers != null && markers.Count > 0)
+        {
+            await RenderLines(markers, markRadius);
+            await RenderMarkers(markers, markRadius);
+        }
+
+        processing = false;
+    }
+
+
     protected override Task OnInitializedAsync()
     {
         Bitmap img = new Bitmap(Path.Combine(environment.ContentRootPath, "wwwroot" + ImageSrc), false);
@@ -97,7 +131,11 @@
         height = img.Height;
 
         markers = new List<Marker>();
+        curCategory = Categories[0];
+
         processing = false;
+        annotations = new Dictionary<string, List<Marker>>();
+        annotations[curCategory] = markers;
 
         return base.OnInitializedAsync();
     }
@@ -105,6 +143,13 @@
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         jsRuntime.InvokeVoidAsync("canvasSize", new object[] { width, height });
+
+        if (!annotations.ContainsKey(curCategory))
+        {
+            annotations[curCategory] = new List<Marker>();
+        }
+        markers = annotations[curCategory];
+
         return base.OnAfterRenderAsync(firstRender);
     }
 

@@ -10,10 +10,17 @@
 
 <h3 class="mt-3">Annotation Preview</h3>
 
-@if (curAnnotation != null)
+@if (annotationGroup != null && curCategory != null)
 {
     <h4>Type: @type</h4>
-    <span>Category: @curAnnotation.Category</span>
+    <span>Category: 
+        <select @bind="curCategory" @bind:event="oninput">
+            @foreach(string category in annotationGroup.Keys)
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+    </span>
 }
 
 <div class="w-100 my-3">
@@ -42,7 +49,11 @@
     [Parameter]
     public Model.Project Project { get; set; }
 
-    public Annotation curAnnotation;
+    public Dictionary<string, Dictionary<string, Annotation>> allAnnotations;
+    public Dictionary<string, Annotation> annotationGroup;
+    public String curCategory;
+    public string curAnnotator;
+
     public string type;
     int curMarkerIndex = 0;
 
@@ -58,7 +69,7 @@
         if (direction == "right")
         {
             curMarkerIndex++;
-            if (Project.Annotations.Count <= curMarkerIndex)
+            if (allAnnotations.Keys.Count <= curMarkerIndex)
             {
                 curMarkerIndex = 0;
             }
@@ -68,20 +79,23 @@
             curMarkerIndex--;
             if (curMarkerIndex < 0)
             {
-                curMarkerIndex = Project.Annotations.Count - 1;
+                curMarkerIndex = allAnnotations.Keys.Count - 1;
             }
         }
 
-        curAnnotation = Project.Annotations.ToList()[curMarkerIndex];
+        curAnnotator = allAnnotations.Keys.ToList<string>()[curMarkerIndex];
+        annotationGroup = allAnnotations[curAnnotator];
+        curCategory = annotationGroup.Keys.ToList<string>()[0];
 
-        if (curAnnotation.IsObjectDetection)
+
+        if (annotationGroup[curCategory].IsObjectDetection)
         {
             type = "Object Detection";
         }
         else
         {
             type = "Classification";
-        }       
+        }
     }
 
     protected override Task OnInitializedAsync()
@@ -90,13 +104,19 @@
         width = img.Width;
         height = img.Height;
 
-        curAnnotation = null;
+        allAnnotations = new Dictionary<string, Dictionary<string, Annotation>>();
+
         type = null;
         if (Project.Annotations.Count > 0)
         {
-            curAnnotation = Project.Annotations.ToList()[0];
+            parseAnnnotations();
 
-            if (curAnnotation.IsObjectDetection)
+            Annotation firstAnnotation = Project.Annotations.ToList()[0];
+            curCategory = firstAnnotation.Category;
+            curAnnotator = firstAnnotation.AnnotatorId;
+            annotationGroup = allAnnotations[curAnnotator];
+
+            if (annotationGroup[curCategory].IsObjectDetection)
             {
                 type = "Object Detection";
             }
@@ -104,10 +124,25 @@
             {
                 type = "Classification";
             }
+
+
         }
 
 
         return base.OnInitializedAsync();
+    }
+
+    private void parseAnnnotations()
+    {
+        foreach (Annotation annotation in Project.Annotations)
+        {
+            string annotator = annotation.AnnotatorId;
+            if (!allAnnotations.ContainsKey(annotator))
+            {
+                allAnnotations[annotator] = new Dictionary<string, Annotation>();
+            }
+            allAnnotations[annotator][annotation.Category] = annotation;
+        }
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -134,10 +169,10 @@
 
         await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
 
-        if (curAnnotation.Markers != null && curAnnotation.Markers.Count > 0)
+        if (annotationGroup[curCategory].Markers != null && annotationGroup[curCategory].Markers.Count > 0)
         {
-            await RenderLines(curAnnotation.Markers.ToList(), markRadius);
-            await RenderMarkers(curAnnotation.Markers.ToList(), markRadius);
+            await RenderLines(annotationGroup[curCategory].Markers.ToList(), markRadius);
+            await RenderMarkers(annotationGroup[curCategory].Markers.ToList(), markRadius);
         }
 
     }

@@ -17,14 +17,11 @@
     @if (project.IsForObjectDetection)
     {
         <h3>Title: @project.Title</h3>
-        <p>Category: @ViewData["Category"]</p>
-        <br />
 
-        @(await Html.RenderComponentAsync<AnnotationCanvas>(RenderMode.Server, new { ImageSrc = project.Src }))
+        @(await Html.RenderComponentAsync<AnnotationCanvas>(RenderMode.Server, new { ImageSrc = project.Src, Categories = ViewData["Categories"] }))
 
         <form method="post" asp-route-returnUrl="/solve">
             <input asp-for="Input.ProjectId" type="hidden" value="@project.Id" />
-            <input asp-for="Input.Category" type="hidden" value="@ViewData["Category"]" />
 
             <button type="submit" class="btn btn-primary my-2">Submit Annotation</button>
         </form>
