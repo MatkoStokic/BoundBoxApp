@@ -8,46 +8,46 @@ using System.Threading.Tasks;
 
 namespace BoundBoxApp.DAL.Services
 {
-    public class BoundService
+    public class AnnotationService
     {
         private readonly ApplicationDbContext _context;
 
-        public BoundService(
+        public AnnotationService(
             ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public List<Annotation> GetPBoundsByUserAsync(string entityId)
+        public List<Annotation> GetPAnnotationsByUserAsync(string entityId)
         {
             var entities = _context.Annotations
-                .Where(bounds => bounds.AnnotatorId == entityId)
-                .Include(bounds => bounds.Markers)
-                .Include(bounds => bounds.Annotator).ToList();
+                .Where(annotation => annotation.AnnotatorId == entityId)
+                .Include(annotation => annotation.Markers)
+                .Include(annotation => annotation.Annotator).ToList();
             entities.ForEach(e => e.Markers = 
                 e.Markers.OrderBy(m => m.Order).ToList());
             return entities;
         }
 
-        public List<Annotation> GetBoundsByProjectAsync(string projectId)
+        public List<Annotation> GetAnnotationsByImageAsync(string imageId)
         {
             var entities = _context.Annotations
-                .Where(bounds => bounds.ProjectId == projectId)
-                .Include(bounds => bounds.Markers)
-                .Include(bounds => bounds.Annotator).ToList();
+                .Where(annotations => annotations.ImageId == imageId)
+                .Include(annotations => annotations.Markers)
+                .Include(annotations => annotations.Annotator).ToList();
             entities.ForEach(e => e.Markers =
                 e.Markers.OrderBy(m => m.Order).ToList());
             return entities;
         }
 
-        public async Task<bool> InsertBoundsAsync(Annotation entity)
+        public async Task<bool> InsertAnnotationAsync(Annotation entity)
         {
             await _context.Annotations.AddAsync(entity);
 
             if (entity.Markers != null)
             {
                 List<Marker> markers = entity.Markers.ToList();
-                markers.ForEach(m => m.BoundsId = entity.Id);
+                markers.ForEach(m => m.AnnotationsId = entity.Id);
                 await _context.Markers.AddRangeAsync(markers);
             }
             
@@ -55,11 +55,11 @@ namespace BoundBoxApp.DAL.Services
             return true;
         }
 
-        public Annotation GetBoundstAsync(string Id)
+        public Annotation GetAnnotationtAsync(string Id)
         {
             var entity = _context.Annotations
-               .Include(bounds => bounds.Markers)
-               .Include(bounds => bounds.Annotator).FirstOrDefault(c => c.Id.Equals(Id));
+               .Include(annotation => annotation.Markers)
+               .Include(annotation => annotation.Annotator).FirstOrDefault(c => c.Id.Equals(Id));
             entity.Markers = entity.Markers.OrderBy(m => m.Order).ToList();
             return entity;
         }
@@ -78,11 +78,11 @@ namespace BoundBoxApp.DAL.Services
             return true;
         }
 
-        public bool IsSolved(string userId, string projectId)
+        public bool IsSolved(string userId, string imageId)
         {
             var bounds = _context.Annotations
                 .Where(bounds => bounds.AnnotatorId == userId 
-                    && bounds.ProjectId == projectId)
+                    && bounds.ImageId == imageId)
                 .FirstOrDefault();
 
             if (bounds != null)
@@ -99,7 +99,7 @@ namespace BoundBoxApp.DAL.Services
             _context.Annotations
                 .Where(bounds => bounds.AnnotatorId == userId)
                 .ToList()
-                .ForEach(bounds => solved.Add(bounds.ProjectId));
+                .ForEach(bounds => solved.Add(bounds.ImageId));
             return solved;
         }
 

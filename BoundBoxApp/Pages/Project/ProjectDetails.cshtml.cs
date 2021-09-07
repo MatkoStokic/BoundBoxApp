@@ -92,8 +92,8 @@ namespace BoundBoxApp
             if (Input.Image != null)
             {
                 string src = SaveFile(Guid.NewGuid().ToString()).Result;
-                DeleteFile(Project.Src);
-                Project.Src = "/upload/" + src;
+                // DeleteFile(Project.Src);
+                // Project.Src = "/upload/" + src;
             }
 
             UpdateEntity(Project).Wait();

@@ -21,18 +21,18 @@ namespace BoundBoxApp.Pages.Bounds
         [ViewData]
         public List<string> Categories { get; set; }
 
-        private readonly BoundService _boundService;
+        private readonly AnnotationService _annotationService;
         private readonly ProjectService _projectService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<SolveModel> _logger;
 
         public SolveModel (
-            BoundService boundService,
+            AnnotationService annotationService,
             ProjectService projectService,
             UserManager<IdentityUser> userManager,
             ILogger<SolveModel> logger)
         {
-            _boundService = boundService;
+            _annotationService = annotationService;
             _projectService = projectService;
             _userManager = userManager;
             _logger = logger;
@@ -71,7 +71,7 @@ namespace BoundBoxApp.Pages.Bounds
 
             var user = GetUser().Result;
             if (user == null
-                || _boundService.IsSolved(user.Id, Input.ProjectId))
+                || _annotationService.IsSolved(user.Id, Input.ProjectId))
             {
                 return LocalRedirect(returnUrl);
             }
@@ -96,13 +96,13 @@ namespace BoundBoxApp.Pages.Bounds
                 return;
             }
 
-            var solved = _boundService.GetSolved(user.Id);
+            var solved = _annotationService.GetSolved(user.Id);
             var projects = _projectService.GetRandomForMarking(solved).Result;
             if (projects.Count == 0)
             {
                 return;
             }
-            Project = _boundService.GetRandomProject(projects);
+            Project = _annotationService.GetRandomProject(projects);
             Categories = Project.Categories.Split(", ").ToList();
 
         }
@@ -110,14 +110,14 @@ namespace BoundBoxApp.Pages.Bounds
         public void FetchForCategory()
         {
             var user = GetUser().Result;
-            var solved = _boundService.GetSolved(user.Id);
+            var solved = _annotationService.GetSolved(user.Id);
             var projects = _projectService.GetRandomForCategory(solved).Result;
             if (projects.Count == 0)
             {
                 return;
             }
 
-            Project = _boundService.GetRandomProject(projects);
+            Project = _annotationService.GetRandomProject(projects);
             Categories = Project.Categories.Split(", ").ToList();
 
         }
@@ -132,13 +132,13 @@ namespace BoundBoxApp.Pages.Bounds
                 {
                     Id = Guid.NewGuid().ToString(),
                     AnnotatorId = userId,
-                    ProjectId = Input.ProjectId,
+                    ImageId = Input.ProjectId,
                     Category = key,
                     IsObjectDetection = true,
                     Markers = markers
                 };
 
-                var saved = await _boundService.InsertBoundsAsync(entity);
+                var saved = await _annotationService.InsertAnnotationAsync(entity);
                 if (saved)
                 {
                     _logger.LogInformation("Created new bounds {0}", entity);
@@ -157,12 +157,12 @@ namespace BoundBoxApp.Pages.Bounds
             {
                 Id = Guid.NewGuid().ToString(),
                 AnnotatorId = userId,
-                ProjectId = Input.ProjectId,
+                ImageId = Input.ProjectId,
                 Category = Input.Category,
                 IsObjectDetection = false
             };
 
-            var saved = await _boundService.InsertBoundsAsync(entity);
+            var saved = await _annotationService.InsertAnnotationAsync(entity);
             if (saved)
             {
                 _logger.LogInformation("Created new bounds {0}", entity);

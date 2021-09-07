@@ -89,7 +89,7 @@
                 }
             }
 
-            if (!contains)
+            if (!contains && eventArgs.Button == 0)
             {
                 markers.Add(new Marker() { XCoords = mouseX, YCoords = mouseY });
             }

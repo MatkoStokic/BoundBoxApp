@@ -109,7 +109,6 @@ namespace BoundBoxApp.Pages.Project
                 Title = Input.Title,
                 Categories = Input.Categories,
                 IsForObjectDetection = Input.IsForObjectDetection,
-                Src = "/upload/" + src,
                 OwnerId = userId
             };
 

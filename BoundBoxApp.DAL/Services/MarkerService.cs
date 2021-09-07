@@ -23,17 +23,9 @@ namespace BoundBoxApp.DAL.Services
             return true;
         }
 
-
-        public async Task<bool> UpdateProjectAsync(Project entity)
+        public async Task<bool> DeleteMarkerAsync(Marker entity)
         {
-            _context.Projects.Update(entity);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> DeleteEmployeeAsync(Project entity)
-        {
-            _context.Projects.Remove(entity);
+            _context.Markers.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
         }

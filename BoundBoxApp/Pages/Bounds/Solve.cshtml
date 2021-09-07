@@ -18,7 +18,7 @@
     {
         <h3>Title: @project.Title</h3>
 
-        @(await Html.RenderComponentAsync<AnnotationCanvas>(RenderMode.Server, new { ImageSrc = project.Src, Categories = ViewData["Categories"] }))
+        @(await Html.RenderComponentAsync<AnnotationCanvas>(RenderMode.Server, new { ImageSrc = project.Images.ToList()[0].Src, Categories = ViewData["Categories"] }))
 
         <form method="post" asp-route-returnUrl="/solve">
             <input asp-for="Input.ProjectId" type="hidden" value="@project.Id" />
@@ -32,7 +32,7 @@
         <br />
 
         <div class="w-100 mb-2">
-            <img src="@project.Src" class="w-100"/>
+            <img src="@project.Images.ToList()[0].Src" class="w-100"/>
         </div>
 
         <form method="post" asp-route-returnUrl="/solve">

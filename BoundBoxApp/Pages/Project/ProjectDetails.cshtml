@@ -35,14 +35,14 @@
     </div>
     <br />
     <hr />
-    @if (Model.Project.Annotations.Count > 0)
+    @if (Model.Project.Images.Count > 0)
     {
         @(await Html.RenderComponentAsync<AnnotationPreview>(RenderMode.Server, new { Project = Model.Project }))
     }
     else
     {
         <div class="w-100 mb-2">
-            <img src="@Model.Project.Src" class="w-100" />
+            <img src="@Model.Project.Images.ToList()[0].Src" class="w-100" />
         </div>
     }
 }

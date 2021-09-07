@@ -17,8 +17,8 @@ namespace BoundBoxApp.Model
         public string AnnotatorId { get; set; }
         public IdentityUser Annotator { get; set; }
 
-        [ForeignKey("Project")]
-        public string ProjectId { get; set; }
+        [ForeignKey("Image")]
+        public string ImageId { get; set; }
 
 
         public ICollection<Marker> Markers { get; set; }

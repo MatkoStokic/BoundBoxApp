@@ -25,7 +25,7 @@
 
 <div class="w-100 my-3">
     <div @ref="divCanvas" id="canvasContainer" class="position-relative"
-         style="background-image:url('@Project.Src');background-size:contain">
+         style="background-image:url('@Project.Images.ToList()[0].Src');background-size:contain">
 
         <BECanvas @ref="myCanvas" Width="@width" Height="@height"></BECanvas>
         <div class="position-absolute p-1 m-2" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity = 0.5;"
@@ -100,18 +100,18 @@
 
     protected override Task OnInitializedAsync()
     {
-        Bitmap img = new Bitmap(Path.Combine(environment.ContentRootPath, "wwwroot" + Project.Src), false);
+        Bitmap img = new Bitmap(Path.Combine(environment.ContentRootPath, "wwwroot" + Project.Images.ToList()[0].Src), false);
         width = img.Width;
         height = img.Height;
 
         allAnnotations = new Dictionary<string, Dictionary<string, Annotation>>();
 
         type = null;
-        if (Project.Annotations.Count > 0)
+        if (Project.Images.Count > 0)
         {
             parseAnnnotations();
 
-            Annotation firstAnnotation = Project.Annotations.ToList()[0];
+            Annotation firstAnnotation = Project.Images.ToList()[0].Annotations.ToList()[0];
             curCategory = firstAnnotation.Category;
             curAnnotator = firstAnnotation.AnnotatorId;
             annotationGroup = allAnnotations[curAnnotator];
@@ -134,14 +134,14 @@
 
     private void parseAnnnotations()
     {
-        foreach (Annotation annotation in Project.Annotations)
+        foreach (Model.Image image in Project.Images)
         {
-            string annotator = annotation.AnnotatorId;
+            string annotator = image.Id;
             if (!allAnnotations.ContainsKey(annotator))
             {
                 allAnnotations[annotator] = new Dictionary<string, Annotation>();
             }
-            allAnnotations[annotator][annotation.Category] = annotation;
+            allAnnotations[annotator][image.Src] = image.Annotations.ToList()[0];
         }
     }
 
@@ -149,7 +149,7 @@
     {
         jsRuntime.InvokeVoidAsync("canvasSize", new object[] { width, height });
 
-        if (Project.Annotations == null || Project.Annotations.Count == 0)
+        if (Project.Images == null || Project.Images.Count == 0)
         {
             return base.OnAfterRenderAsync(firstRender);
         }

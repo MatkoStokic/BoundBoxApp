@@ -12,14 +12,14 @@ namespace BoundBoxApp.DAL.Services
     public class ProjectService
     {
         private readonly ApplicationDbContext _context;
-        private readonly BoundService _boundService;
+        private readonly ImageService _imageService;
 
         public ProjectService (
             ApplicationDbContext context,
-            BoundService boundService)
+            ImageService imageService)
         {
             _context = context;
-            _boundService = boundService;
+            _imageService = imageService;
         }
 
         public async Task<List<Project>> GetProjectsByUserAsync(string userId)
@@ -50,7 +50,7 @@ namespace BoundBoxApp.DAL.Services
             Project project = await _context.Projects
                 .Include(project => project.Owner)
                 .FirstOrDefaultAsync(c => c.Id.Equals(Id));
-            project.Annotations = _boundService.GetBoundsByProjectAsync(project.Id);
+            project.Images = _imageService.GetImagesByProjectAsync(project.Id);
             return project;
         }
 

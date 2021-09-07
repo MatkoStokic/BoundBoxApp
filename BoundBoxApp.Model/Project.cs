@@ -10,7 +10,6 @@ namespace BoundBoxApp.Model
     {
         [Key]
         public string Id { get; set; }
-        public string Src { get; set; }
         public string Title { get; set; }
         public string Categories { get; set; }
         public bool IsForObjectDetection { get; set; }
@@ -20,6 +19,6 @@ namespace BoundBoxApp.Model
         public string OwnerId { get; set; }
         public IdentityUser Owner { get; set; }
 
-        public ICollection<Annotation> Annotations { get; set; }
+        public ICollection<Image> Images { get; set; }
     }
 }
