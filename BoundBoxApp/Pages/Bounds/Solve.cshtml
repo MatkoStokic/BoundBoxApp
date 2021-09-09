@@ -10,18 +10,19 @@
 </div>
 
 
-@if (ViewData["Project"] != null)
+@if (ViewData["Project"] != null && ViewData["Image"] != null)
 {
     var project = ViewData["Project"] as Project;
+    var image = ViewData["Image"] as Image;
 
     @if (project.IsForObjectDetection)
     {
         <h3>Title: @project.Title</h3>
 
-        @(await Html.RenderComponentAsync<AnnotationCanvas>(RenderMode.Server, new { ImageSrc = project.Images.ToList()[0].Src, Categories = ViewData["Categories"] }))
+        @(await Html.RenderComponentAsync<AnnotationCanvas>(RenderMode.Server, new { ImageSrc = image.Src, Categories = ViewData["Categories"] }))
 
         <form method="post" asp-route-returnUrl="/solve">
-            <input asp-for="Input.ProjectId" type="hidden" value="@project.Id" />
+            <input asp-for="Input.ImageId" type="hidden" value="@image.Id" />
 
             <button type="submit" class="btn btn-primary my-2">Submit Annotation</button>
         </form>
@@ -32,11 +33,11 @@
         <br />
 
         <div class="w-100 mb-2">
-            <img src="@project.Images.ToList()[0].Src" class="w-100"/>
+            <img src="@image.Src" class="w-100"/>
         </div>
 
         <form method="post" asp-route-returnUrl="/solve">
-            <input asp-for="Input.ProjectId" type="hidden" value="@project.Id" />
+            <input asp-for="Input.ImageId" type="hidden" value="@image.Id" />
             <select asp-for="Input.Category" class="form-control" required>
                 @foreach ( string category in @ViewData["Categories"] as List<string>)
                 {

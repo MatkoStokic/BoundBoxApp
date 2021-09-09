@@ -23,7 +23,7 @@ namespace BoundBoxApp.DAL.Services
             var entities = _context.Annotations
                 .Where(annotation => annotation.AnnotatorId == entityId)
                 .Include(annotation => annotation.Markers)
-                .Include(annotation => annotation.Annotator).ToList();
+                .Include(annotation => annotation.Annotator).AsNoTracking().ToList();
             entities.ForEach(e => e.Markers = 
                 e.Markers.OrderBy(m => m.Order).ToList());
             return entities;
@@ -34,7 +34,7 @@ namespace BoundBoxApp.DAL.Services
             var entities = _context.Annotations
                 .Where(annotations => annotations.ImageId == imageId)
                 .Include(annotations => annotations.Markers)
-                .Include(annotations => annotations.Annotator).ToList();
+                .Include(annotations => annotations.Annotator).AsNoTracking().ToList();
             entities.ForEach(e => e.Markers =
                 e.Markers.OrderBy(m => m.Order).ToList());
             return entities;
@@ -59,7 +59,7 @@ namespace BoundBoxApp.DAL.Services
         {
             var entity = _context.Annotations
                .Include(annotation => annotation.Markers)
-               .Include(annotation => annotation.Annotator).FirstOrDefault(c => c.Id.Equals(Id));
+               .Include(annotation => annotation.Annotator).AsNoTracking().FirstOrDefault(c => c.Id.Equals(Id));
             entity.Markers = entity.Markers.OrderBy(m => m.Order).ToList();
             return entity;
         }
@@ -73,7 +73,13 @@ namespace BoundBoxApp.DAL.Services
 
         public async Task<bool> DeleteBoundsAsync(Annotation entity)
         {
+
+            foreach (Marker marker in entity.Markers)
+            {
+                _context.Markers.Remove(marker);
+            }
             _context.Annotations.Remove(entity);
+
             await _context.SaveChangesAsync();
             return true;
         }
@@ -83,6 +89,7 @@ namespace BoundBoxApp.DAL.Services
             var bounds = _context.Annotations
                 .Where(bounds => bounds.AnnotatorId == userId 
                     && bounds.ImageId == imageId)
+                .AsNoTracking()
                 .FirstOrDefault();
 
             if (bounds != null)
@@ -98,16 +105,10 @@ namespace BoundBoxApp.DAL.Services
             List<string> solved = new List<string>();
             _context.Annotations
                 .Where(bounds => bounds.AnnotatorId == userId)
+                .AsNoTracking()
                 .ToList()
                 .ForEach(bounds => solved.Add(bounds.ImageId));
             return solved;
-        }
-
-        public Project GetRandomProject(List<Project> projects)
-        {
-            var random = new Random();
-            int index = random.Next(projects.Count);
-            return projects[index];
         }
     }
 }

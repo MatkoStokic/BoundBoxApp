@@ -1,0 +1,52 @@
+﻿@using BoundBoxApp.Model
+@using BoundBoxApp.DAL.Services
+@inject ImageService _imageService
+
+<h4>Images</h4>
+<div class="d-grid gap-2">
+    <div class="row">
+        @foreach (Image image in Images)
+        {
+            <div class="col-3 mb-2 position-relative">
+                <img src="@image.Src" class="w-100" />
+                <div class="delBtn" @onclick="() => delete(image)">x</div>
+            </div>
+        }
+    </div>
+    <h3>Queued for delete</h3>
+    <div class="row" style="min-height:100px">
+        @foreach (Image image in ForDelete)
+        {
+            <div class="col-3 mb-2 position-relative">
+                <img src="@image.Src" class="w-100" />
+                <div class="delBtn" @onclick="() => Save(image)">x</div>
+            </div>
+        }
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public List<Image> Images { get; set; }
+
+    public static List<Image> ForDelete { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        ForDelete = new List<Image>();
+        base.OnInitialized();
+    }
+
+    public void delete(Image image)
+    {
+        Images.Remove(image);
+        ForDelete.Add(image);
+    }
+
+    public void Save(Image image)
+    {
+        ForDelete.Remove(image);
+        Images.Add(image);
+    }
+}

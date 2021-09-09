@@ -27,6 +27,7 @@ namespace BoundBoxApp.DAL.Services
             List<Project> projects = await _context.Projects
                 .Include(project => project.Owner)
                 .Where(p => p.OwnerId == userId)
+                .AsNoTracking()
                 .ToListAsync();
            
             return projects;
@@ -49,6 +50,7 @@ namespace BoundBoxApp.DAL.Services
         {
             Project project = await _context.Projects
                 .Include(project => project.Owner)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id.Equals(Id));
             project.Images = _imageService.GetImagesByProjectAsync(project.Id);
             return project;
@@ -61,24 +63,70 @@ namespace BoundBoxApp.DAL.Services
             return true;
         }
 
-        public async Task<List<Project>> GetRandomForMarking(List<string> solved)
+        public async Task<Project> GetRandomForMarking(List<string> solved)
         {
-            List<Project> projects = await _context.Projects
-                .Include(project => project.Owner)
-                .Where(p => !solved.Contains(p.Id) && p.IsForObjectDetection)
+            List<Image> images = await _context.Images
+                .Where(i => !solved.Contains(i.Id))
+                .AsNoTracking()
                 .ToListAsync();
-            
-            return projects;
+
+            List<Project> projects = new List<Project>();
+            foreach (Image img in images)
+            {
+                Project project = await _context.Projects.AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.Id.Equals(img.ProjectId));
+
+                if (project.IsForObjectDetection)
+                {
+                    projects.Add(new Project
+                    {
+                        Id = project.Id,
+                        Categories = project.Categories,
+                        OwnerId = project.OwnerId,
+                        Title = project.Title,
+                        IsForObjectDetection = project.IsForObjectDetection,
+                        Images = new List<Image> { img }
+                    });
+                }
+            }
+
+            if (projects.Count == 0)
+            {
+                return null;
+            }
+
+            var random = new Random();
+            int index = random.Next(projects.Count);
+            return projects[index];
         }
 
-        public async Task<List<Project>> GetRandomForCategory(List<string> solved)
+        public async Task<Project> GetRandomForCategory(List<string> solved)
         {
-            List<Project> projects = await _context.Projects
-                .Include(project => project.Owner)
-                .Where(p => !solved.Contains(p.Id) && !p.IsForObjectDetection)
+            List<Image> images = await _context.Images
+                .Where(i => !solved.Contains(i.Id)).AsNoTracking()
                 .ToListAsync();
-            
-            return projects;
+
+            List<Project> projects = new List<Project>();
+            foreach (Image img in images)
+            {
+                Project project = await _context.Projects.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id.Equals(img.ProjectId));
+
+                if (!project.IsForObjectDetection)
+                {
+                    project.Images = new List<Image> { img };
+                    projects.Add(project);
+                }
+            }
+
+            if (projects.Count == 0)
+            {
+                return null;
+            }
+
+            var random = new Random();
+            int index = random.Next(projects.Count);
+            return projects[index];
         }
     }
 }

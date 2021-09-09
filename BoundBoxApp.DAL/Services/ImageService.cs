@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BoundBoxApp.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace BoundBoxApp.DAL.Services
 {
@@ -29,7 +30,12 @@ namespace BoundBoxApp.DAL.Services
 
         public async Task<bool> DeleteImageAsync(Image entity)
         {
+            foreach (Annotation annotation in entity.Annotations)
+            {
+                _annotationService.DeleteBoundsAsync(annotation).Wait();
+            }
             _context.Images.Remove(entity);
+
             await _context.SaveChangesAsync();
             return true;
         }
@@ -37,7 +43,7 @@ namespace BoundBoxApp.DAL.Services
         public List<Image> GetImagesByProjectAsync(string projectId)
         {
             var entities = _context.Images
-                .Where(image => image.ProjectId == projectId)
+                .Where(image => image.ProjectId == projectId).AsNoTracking()
                 .ToList();
 
             foreach (Image entity in entities) {

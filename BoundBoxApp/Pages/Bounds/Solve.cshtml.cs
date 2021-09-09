@@ -17,6 +17,8 @@ namespace BoundBoxApp.Pages.Bounds
     {
         [ViewData]
         public Model.Project Project { get; set; }
+        [ViewData]
+        public Image Image { get; set; }
         public bool IsFetched { get; set; } = false;
         [ViewData]
         public List<string> Categories { get; set; }
@@ -43,7 +45,8 @@ namespace BoundBoxApp.Pages.Bounds
 
         public class InputModel
         {
-            public string ProjectId { get; set; }
+            public string ImageId { get; set; }
+
             public string Category { get; set; }
         }
 
@@ -71,7 +74,7 @@ namespace BoundBoxApp.Pages.Bounds
 
             var user = GetUser().Result;
             if (user == null
-                || _annotationService.IsSolved(user.Id, Input.ProjectId))
+                || _annotationService.IsSolved(user.Id, Input.ImageId))
             {
                 return LocalRedirect(returnUrl);
             }
@@ -97,13 +100,18 @@ namespace BoundBoxApp.Pages.Bounds
             }
 
             var solved = _annotationService.GetSolved(user.Id);
-            var projects = _projectService.GetRandomForMarking(solved).Result;
-            if (projects.Count == 0)
+            Project = _projectService.GetRandomForMarking(solved).Result;
+
+            if (Project == null)
             {
                 return;
             }
-            Project = _annotationService.GetRandomProject(projects);
+
             Categories = Project.Categories.Split(", ").ToList();
+
+            var random = new Random();
+            int index = random.Next(Project.Images.Count);
+            Image = Project.Images.ToList()[index];
 
         }
 
@@ -111,15 +119,18 @@ namespace BoundBoxApp.Pages.Bounds
         {
             var user = GetUser().Result;
             var solved = _annotationService.GetSolved(user.Id);
-            var projects = _projectService.GetRandomForCategory(solved).Result;
-            if (projects.Count == 0)
+            Project = _projectService.GetRandomForCategory(solved).Result;
+
+            if (Project == null)
             {
                 return;
             }
 
-            Project = _annotationService.GetRandomProject(projects);
             Categories = Project.Categories.Split(", ").ToList();
 
+            var random = new Random();
+            int index = random.Next(Project.Images.Count);
+            Image = Project.Images.ToList()[index];
         }
 
         public async Task CreateForMarking(string userId)
@@ -132,7 +143,7 @@ namespace BoundBoxApp.Pages.Bounds
                 {
                     Id = Guid.NewGuid().ToString(),
                     AnnotatorId = userId,
-                    ImageId = Input.ProjectId,
+                    ImageId = Input.ImageId,
                     Category = key,
                     IsObjectDetection = true,
                     Markers = markers
@@ -157,7 +168,7 @@ namespace BoundBoxApp.Pages.Bounds
             {
                 Id = Guid.NewGuid().ToString(),
                 AnnotatorId = userId,
-                ImageId = Input.ProjectId,
+                ImageId = Input.ImageId,
                 Category = Input.Category,
                 IsObjectDetection = false
             };

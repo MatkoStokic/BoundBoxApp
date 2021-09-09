@@ -1,5 +1,17 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.delBtn {
+    background: red;
+    color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    padding: 0 7px;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+}
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;

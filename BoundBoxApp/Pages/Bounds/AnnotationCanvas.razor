@@ -11,7 +11,7 @@
 @inject IWebHostEnvironment environment
 
 <form>
-    <select @bind="curCategory" @bind:event="oninput" @onchange="CategoryChange">
+    <select @bind="curCategory" @bind:event="oninput" @onchange="CategoryChange" class="form-control">
         @foreach (string category in Categories)
         {
             <option value="@category">

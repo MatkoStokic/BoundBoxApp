@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BoundBoxApp.DAL.Services;
+using BoundBoxApp.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,17 +23,20 @@ namespace BoundBoxApp.Pages.Project
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<CreateProjectModel> _logger;
         private readonly ProjectService _projectService;
+        private readonly ImageService _imageService;
 
         public CreateProjectModel(
             IWebHostEnvironment environment,
             UserManager<IdentityUser> userManager,
             ILogger<CreateProjectModel> logger,
-            ProjectService projectService)
+            ProjectService projectService,
+            ImageService imageService)
         {
             _environment = environment;
             _userManager = userManager;
             _logger = logger;
             _projectService = projectService;
+            _imageService = imageService;
         }
 
         [BindProperty]
@@ -46,15 +50,15 @@ namespace BoundBoxApp.Pages.Project
             public string Title { get; set; }
 
             [Required]
-            [Display(Name = "Categories")]
+            [Display(Name = "Categories", Prompt = "cat1, cat2, cat3, etc.")]
             public string Categories { get; set; }
 
             public bool IsForObjectDetection { get; set; }
 
             [Required]
             [DataType(DataType.Upload)]
-            [Display(Name = "Image")]
-            public IFormFile Image { get; set; }
+            [Display(Name = "Images")]
+            public List<IFormFile> Images { get; set; }
         }
 
         public IActionResult OnPost()
@@ -67,14 +71,11 @@ namespace BoundBoxApp.Pages.Project
                 return LocalRedirect(returnUrl);
             }
 
-            var id = Guid.NewGuid().ToString();
-            var file = SaveFile(id).Result;
-            if (file == null)
-            {
-                return LocalRedirect(returnUrl);
-            }
+            string projectId = Guid.NewGuid().ToString();
 
-            SaveEntity(id, file, user.Id).Wait();
+            SaveEntity(projectId, user.Id).Wait();
+            var saved = SaveFiles(projectId).Result;
+
             return LocalRedirect(returnUrl);
         }
 
@@ -85,23 +86,36 @@ namespace BoundBoxApp.Pages.Project
             return user;
         }
 
-        private async Task<string> SaveFile(string guid)
+        private async Task<bool> SaveFiles(string projectId)
         {
-            var contentType = Input.Image.ContentType.Split("/");
-            if (contentType[0] != "image")
-            {
-                return null;
+            foreach (IFormFile image in Input.Images) {
+                var contentType = image.ContentType.Split("/");
+                if (contentType[0] != "image")
+                {
+                    return false;
+                }
+                string id = Guid.NewGuid().ToString();
+                string fileName = id + "." + contentType[1];
+                var file = Path.Combine(_environment.ContentRootPath, "wwwroot/upload", fileName);
+                using (var fileStream = new FileStream(file, FileMode.Create))
+                {
+                    await image.CopyToAsync(fileStream);
+                }
+
+                Image entity = new Image
+                {
+                    Id = id,
+                    Src = "/upload/" + fileName,
+                    ProjectId = projectId
+                };
+
+                _imageService.InsertImageAsync(entity).Wait();
             }
-            string fileName = guid + "." + contentType[1];
-            var file = Path.Combine(_environment.ContentRootPath, "wwwroot/upload", fileName);
-            using (var fileStream = new FileStream(file, FileMode.Create))
-            {
-                await Input.Image.CopyToAsync(fileStream);
-            }
-            return fileName;
+            
+            return true;
         }
 
-        private async Task SaveEntity(string id, string src, string userId)
+        private async Task SaveEntity(string id, string userId)
         {
             Model.Project entity = new Model.Project()
             {

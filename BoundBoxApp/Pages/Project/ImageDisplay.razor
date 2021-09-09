@@ -1,0 +1,58 @@
+﻿@using BoundBoxApp.Model;
+@using BoundBoxApp.Pages.Project
+@inject IJSRuntime jsRuntime
+
+<h4>Images</h4>
+@if (Project.Images.Count > 0)
+{
+    <div class="d-grid gap-2">
+        <div class="row">
+            @foreach (Image image in Project.Images)
+            {
+                <div id="@image.Id" class="col-3 mb-2" @onclick='() => SwitchImage(image)'>
+                    <img src="@image.Src" class="w-100" />
+                </div>
+            }
+        </div>
+    </div>
+    @if (Image.Annotations.Count > 0)
+    {
+        <AnnotationPreview Image="@Image">
+        </AnnotationPreview>
+    }
+    else
+    {
+        <br />
+        <p>No annotations for this image!</p>
+        <img src="@Image.Src" class="w-100 mb-2" />
+    }
+}
+else
+{
+    <br />
+    <p>No images for this project!</p>
+}
+
+
+@code{
+    [Parameter]
+    public Model.Project Project { get; set; }
+
+    public Image Image { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        @if (Project.Images.Count > 0)
+        {
+            Image = Project.Images.ToList()[0];
+        }
+
+        return base.OnInitializedAsync();
+    }
+
+    public void SwitchImage(Image image)
+    {
+        Image = image;
+
+    }
+}

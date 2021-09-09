@@ -13,19 +13,27 @@
 @if (annotationGroup != null && curCategory != null)
 {
     <h4>Type: @type</h4>
-    <span>Category: 
-        <select @bind="curCategory" @bind:event="oninput">
-            @foreach(string category in annotationGroup.Keys)
-            {
-                <option value="@category">@category</option>
-            }
-        </select>
+    <span>
+        Category:
+        @if (type == "Object Detection")
+        {
+            <select @bind="curCategory" @bind:event="oninput" class="form-control">
+                @foreach (string category in annotationGroup.Keys)
+                {
+                    <option value="@category">@category</option>
+                }
+            </select>
+        }
+        else
+        {
+            <span class="pl-1">@curCategory</span>
+        }
     </span>
 }
 
 <div class="w-100 my-3">
     <div @ref="divCanvas" id="canvasContainer" class="position-relative"
-         style="background-image:url('@Project.Images.ToList()[0].Src');background-size:contain">
+         style="background-image:url('@Image.Src');background-size:contain">
 
         <BECanvas @ref="myCanvas" Width="@width" Height="@height"></BECanvas>
         <div class="position-absolute p-1 m-2" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity = 0.5;"
@@ -47,7 +55,7 @@
 
 @code {
     [Parameter]
-    public Model.Project Project { get; set; }
+    public Model.Image Image { get; set; }
 
     public Dictionary<string, Dictionary<string, Annotation>> allAnnotations;
     public Dictionary<string, Annotation> annotationGroup;
@@ -100,18 +108,18 @@
 
     protected override Task OnInitializedAsync()
     {
-        Bitmap img = new Bitmap(Path.Combine(environment.ContentRootPath, "wwwroot" + Project.Images.ToList()[0].Src), false);
+        Bitmap img = new Bitmap(Path.Combine(environment.ContentRootPath, "wwwroot" + Image.Src), false);
         width = img.Width;
         height = img.Height;
 
         allAnnotations = new Dictionary<string, Dictionary<string, Annotation>>();
 
         type = null;
-        if (Project.Images.Count > 0)
+        if (Image != null)
         {
             parseAnnnotations();
 
-            Annotation firstAnnotation = Project.Images.ToList()[0].Annotations.ToList()[0];
+            Annotation firstAnnotation = Image.Annotations.ToList()[0];
             curCategory = firstAnnotation.Category;
             curAnnotator = firstAnnotation.AnnotatorId;
             annotationGroup = allAnnotations[curAnnotator];
@@ -134,14 +142,14 @@
 
     private void parseAnnnotations()
     {
-        foreach (Model.Image image in Project.Images)
+        foreach (Annotation annotation in Image.Annotations)
         {
-            string annotator = image.Id;
+            string annotator = annotation.AnnotatorId;
             if (!allAnnotations.ContainsKey(annotator))
             {
                 allAnnotations[annotator] = new Dictionary<string, Annotation>();
             }
-            allAnnotations[annotator][image.Src] = image.Annotations.ToList()[0];
+            allAnnotations[annotator][annotation.Category] = annotation;
         }
     }
 
@@ -149,7 +157,7 @@
     {
         jsRuntime.InvokeVoidAsync("canvasSize", new object[] { width, height });
 
-        if (Project.Images == null || Project.Images.Count == 0)
+        if (Image == null || Image.Annotations.Count == 0)
         {
             return base.OnAfterRenderAsync(firstRender);
         }
