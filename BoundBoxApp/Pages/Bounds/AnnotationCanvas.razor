@@ -113,6 +113,7 @@
 
         int markRadius = width / 160;
 
+        currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
         await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
         if (markers != null && markers.Count > 0)
         {
