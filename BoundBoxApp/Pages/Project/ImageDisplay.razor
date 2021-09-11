@@ -17,7 +17,7 @@
     </div>
     @if (Image.Annotations.Count > 0)
     {
-        <AnnotationPreview Image="@Image">
+        <AnnotationPreview @ref="preview" Image="@Image">
         </AnnotationPreview>
     }
     else
@@ -40,6 +40,8 @@ else
 
     public Image Image { get; set; }
 
+    private AnnotationPreview preview;
+
     protected override Task OnInitializedAsync()
     {
         @if (Project.Images.Count > 0)
@@ -54,5 +56,12 @@ else
     {
         Image = image;
 
+        if (preview != null && image.Annotations.Count > 0)
+        {
+            preview.reinitialize(image).Wait();
+        } else
+        {
+            preview = null;
+        }
     }
 }

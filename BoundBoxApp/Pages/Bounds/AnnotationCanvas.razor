@@ -12,25 +12,33 @@
 
 <form>
     <select @bind="curCategory" @bind:event="oninput" @onchange="CategoryChange" class="form-control">
-        @foreach (string category in Categories)
+        @for (int i = 0; i < Categories.ToList().Count; i++)
         {
-            <option value="@category">
-                @category
+            <option value="@i">
+                @Categories.ToList()[i]
             </option>
         }
     </select>
 </form>
 <br />
 
-<div class="w-100">
+<div style="display:flex">
     <div @ref="divCanvas" oncontextmenu="return false;" @onmouseup="OnClick" id="canvasContainer"
-         style="background-image:url('@ImageSrc');background-size:contain">
+         style="background-image:url('@ImageSrc');background-size:contain;width:80%;display:inline-block">
 
         <BECanvas @ref="myCanvas" Width="@width" Height="@height"></BECanvas>
     </div>
+    <div class="pl-1" style="width:18%;display:inline-block;">
+        @for (int i = 0; i < Categories.ToList().Count; i++)
+        {
+            <div>
+                <span style="display:inline-block;width:7px;height:15px;background-color:@colors[i]">
+                </span>
+                <span class="pl-1" style="display:inline-block">@Categories.ToList()[i]</span>
+            </div>
+        }
+    </div>
 </div>
-
-
 
 @code {
     [Parameter]
@@ -38,7 +46,7 @@
     [Parameter]
     public List<string> Categories { get; set; }
 
-    private string curCategory;
+    private int curCategory;
     public static Dictionary<string, List<Marker>> annotations = new Dictionary<string, List<Marker>>();
 
     public static List<Marker> markers = new List<Marker>();
@@ -51,9 +59,16 @@
     Blazor.Extensions.BECanvasComponent myCanvas;
     Canvas2DContext currentCanvasContext;
 
+    List<string> colors = new List<string>()
+    {
+        "rgb(244, 26, 26)", "rgb(5, 99, 176)", "rgb(3, 165, 32)", "rgb(120, 6, 177)", "rgb(237, 253, 44)",
+        "rgb(93, 255, 174)", "rgb(249, 150, 25)", "rgb(255, 159, 187)", "rgb(159, 241, 255)", "rgb(135, 255, 87)"
+    };
+
+
     async void OnClick(MouseEventArgs eventArgs)
     {
-        if(processing)
+        if (processing)
         {
             return;
         }
@@ -97,6 +112,7 @@
             currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
 
             await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
+            await RenderBackShapes(markRadius);
             if (markers != null && markers.Count > 0)
             {
                 await RenderLines(markers, markRadius);
@@ -115,6 +131,9 @@
 
         currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
         await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
+
+        await RenderBackShapes(markRadius);
+
         if (markers != null && markers.Count > 0)
         {
             await RenderLines(markers, markRadius);
@@ -131,12 +150,17 @@
         width = img.Width;
         height = img.Height;
 
-        markers = new List<Marker>();
-        curCategory = Categories[0];
+        curCategory = 0;
 
         processing = false;
         annotations = new Dictionary<string, List<Marker>>();
-        annotations[curCategory] = markers;
+
+        foreach (String category in Categories)
+        {
+            annotations[category] = new List<Marker>();
+        }
+
+        markers = annotations[Categories[curCategory]];
 
         return base.OnInitializedAsync();
     }
@@ -145,11 +169,7 @@
     {
         jsRuntime.InvokeVoidAsync("canvasSize", new object[] { width, height });
 
-        if (!annotations.ContainsKey(curCategory))
-        {
-            annotations[curCategory] = new List<Marker>();
-        }
-        markers = annotations[curCategory];
+        markers = annotations[Categories[curCategory]];
 
         return base.OnAfterRenderAsync(firstRender);
     }
@@ -161,8 +181,11 @@
 
     private async Task RenderLines(List<Marker> markers, int markRadius)
     {
-        await currentCanvasContext.SetFillStyleAsync("rgb(244, 26, 26)");
-        await currentCanvasContext.SetStrokeStyleAsync("rgb(244, 26, 26)");
+        int colorIndex;
+        Math.DivRem(curCategory, colors.Count, out colorIndex);
+
+        await currentCanvasContext.SetFillStyleAsync(colors[colorIndex]);
+        await currentCanvasContext.SetStrokeStyleAsync(colors[colorIndex]);
         await currentCanvasContext.SetLineWidthAsync(markRadius / 2);
 
         await currentCanvasContext.BeginPathAsync();
@@ -182,14 +205,56 @@
 
     private async Task RenderMarkers(List<Marker> markers, int markRadius)
     {
+        int colorIndex;
+        Math.DivRem(curCategory, colors.Count, out colorIndex);
         foreach (Marker marker in markers)
         {
-            await currentCanvasContext.SetFillStyleAsync("rgb(195, 12, 12)");
+            await currentCanvasContext.SetFillStyleAsync(colors[colorIndex]);
             await currentCanvasContext.FillRectAsync(
                 marker.XCoords - markRadius, marker.YCoords - markRadius, markRadius * 2, markRadius * 2);
             await currentCanvasContext.SetFillStyleAsync("rgb(252, 252, 252)");
             await currentCanvasContext.FillRectAsync(
-                marker.XCoords - markRadius/2, marker.YCoords - markRadius/2, markRadius, markRadius);
+                marker.XCoords - markRadius / 2, marker.YCoords - markRadius / 2, markRadius, markRadius);
         }
+    }
+
+    private async Task RenderBackShapes(int markRadius)
+    {
+        for (int i = 0; i < Categories.Count; i ++)
+        {
+            if (curCategory == i)
+            {
+                continue;
+            }
+
+            var backMarkers = annotations[Categories[i]];
+            if (backMarkers.Count == 0)
+            {
+                continue;
+            }
+
+            int colorIndex;
+            Math.DivRem(i, colors.Count, out colorIndex);
+
+            await currentCanvasContext.SetFillStyleAsync(colors[colorIndex]);
+            await currentCanvasContext.SetStrokeStyleAsync(colors[colorIndex]);
+            await currentCanvasContext.SetLineWidthAsync(markRadius / 4);
+
+            await currentCanvasContext.BeginPathAsync();
+            await currentCanvasContext.MoveToAsync(backMarkers[0].XCoords, backMarkers[0].YCoords);
+            foreach (Marker marker in backMarkers)
+            {
+                await currentCanvasContext.LineToAsync(marker.XCoords, marker.YCoords);
+            }
+            await currentCanvasContext.ClosePathAsync();
+
+            await currentCanvasContext.SetGlobalAlphaAsync(.3f);
+            await currentCanvasContext.FillAsync();
+            await currentCanvasContext.SetGlobalAlphaAsync(.6f);
+            await currentCanvasContext.StrokeAsync();
+        }
+
+        await currentCanvasContext.SetGlobalAlphaAsync(1f);
+
     }
 }

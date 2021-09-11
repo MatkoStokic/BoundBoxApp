@@ -15,4 +15,5 @@ function canvasSize(width, height) {
 
     canvas.style.width = '100%';
     canvas.style.height = '100%';
+    canvas.style.display = "block";
 }

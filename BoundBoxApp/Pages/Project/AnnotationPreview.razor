@@ -10,30 +10,32 @@
 
 <h3 class="mt-3">Annotation Preview</h3>
 
-@if (annotationGroup != null && curCategory != null)
+@if (annotationGroup != null && imageCategories != null && imageCategories.Count > 0)
 {
     <h4>Type: @type</h4>
     <span>
         Category:
         @if (type == "Object Detection")
         {
-            <select @bind="curCategory" @bind:event="oninput" class="form-control">
-                @foreach (string category in annotationGroup.Keys)
-                {
-                    <option value="@category">@category</option>
-                }
-            </select>
+        <select @bind="curCategory" @bind:event="oninput" class="form-control">
+            @for (int i = 0; i < annotationGroup.Keys.ToList().Count; i++)
+            {
+                <option value="@i">
+                    @imageCategories[i]
+                </option>
+            }
+        </select>
         }
         else
         {
-            <span class="pl-1">@curCategory</span>
+            <span class="pl-1">@imageCategories[0]</span>
         }
     </span>
 }
 
-<div class="w-100 my-3">
+<div class="w-100 my-3 d-flex">
     <div @ref="divCanvas" id="canvasContainer" class="position-relative"
-         style="background-image:url('@Image.Src');background-size:contain">
+         style="background-image:url('@Image.Src');background-size:contain;width:80%;display:inline-block">
 
         <BECanvas @ref="myCanvas" Width="@width" Height="@height"></BECanvas>
         <div class="position-absolute p-1 m-2" onmouseover="this.style.opacity=0.8;" onmouseout="this.style.opacity = 0.5;"
@@ -51,6 +53,19 @@
             </svg>
         </div>
     </div>
+    @if (type == "Object Detection")
+    {
+        <div class="pl-1" style="width:18%;display:inline-block;">
+            @for (int i = 0; i < imageCategories.Count; i++)
+            {
+                <div>
+                    <span style="display:inline-block;width:7px;height:15px;background-color:@colors[i]">
+                    </span>
+                    <span class="pl-1" style="display:inline-block">@imageCategories[i]</span>
+                </div>
+            }
+        </div>
+    }
 </div>
 
 @code {
@@ -59,7 +74,9 @@
 
     public Dictionary<string, Dictionary<string, Annotation>> allAnnotations;
     public Dictionary<string, Annotation> annotationGroup;
-    public String curCategory;
+
+    private List<string> imageCategories;
+    public int curCategory;
     public string curAnnotator;
 
     public string type;
@@ -67,6 +84,12 @@
 
     int width;
     int height;
+
+    List<string> colors = new List<string>()
+    {
+        "rgb(244, 26, 26)", "rgb(5, 99, 176)", "rgb(3, 165, 32)", "rgb(120, 6, 177)", "rgb(237, 253, 44)",
+        "rgb(93, 255, 174)", "rgb(249, 150, 25)", "rgb(255, 159, 187)", "rgb(159, 241, 255)", "rgb(135, 255, 87)"
+    };
 
     ElementReference divCanvas;
     Blazor.Extensions.BECanvasComponent myCanvas;
@@ -93,10 +116,10 @@
 
         curAnnotator = allAnnotations.Keys.ToList<string>()[curMarkerIndex];
         annotationGroup = allAnnotations[curAnnotator];
-        curCategory = annotationGroup.Keys.ToList<string>()[0];
+        curCategory = 0;
 
 
-        if (annotationGroup[curCategory].IsObjectDetection)
+        if (annotationGroup[imageCategories[curCategory]].IsObjectDetection)
         {
             type = "Object Detection";
         }
@@ -104,6 +127,12 @@
         {
             type = "Classification";
         }
+    }
+
+    public async Task reinitialize(Model.Image image)
+    {
+        Image = image;
+        await OnInitializedAsync();
     }
 
     protected override Task OnInitializedAsync()
@@ -120,11 +149,13 @@
             parseAnnnotations();
 
             Annotation firstAnnotation = Image.Annotations.ToList()[0];
-            curCategory = firstAnnotation.Category;
             curAnnotator = firstAnnotation.AnnotatorId;
             annotationGroup = allAnnotations[curAnnotator];
 
-            if (annotationGroup[curCategory].IsObjectDetection)
+            imageCategories = annotationGroup.Keys.ToList();
+            curCategory = imageCategories.IndexOf(firstAnnotation.Category);
+
+            if (annotationGroup[firstAnnotation.Category].IsObjectDetection)
             {
                 type = "Object Detection";
             }
@@ -155,6 +186,7 @@
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
+
         jsRuntime.InvokeVoidAsync("canvasSize", new object[] { width, height });
 
         if (Image == null || Image.Annotations.Count == 0)
@@ -176,19 +208,22 @@
         currentCanvasContext = await myCanvas.CreateCanvas2DAsync();
 
         await currentCanvasContext.ClearRectAsync(0, 0, myCanvas.Width, myCanvas.Height);
-
-        if (annotationGroup[curCategory].Markers != null && annotationGroup[curCategory].Markers.Count > 0)
+        await RenderBackShapes(markRadius);
+        if (annotationGroup[imageCategories[curCategory]].Markers != null && annotationGroup[imageCategories[curCategory]].Markers.Count > 0)
         {
-            await RenderLines(annotationGroup[curCategory].Markers.ToList(), markRadius);
-            await RenderMarkers(annotationGroup[curCategory].Markers.ToList(), markRadius);
+            await RenderLines(annotationGroup[imageCategories[curCategory]].Markers.ToList(), markRadius);
+            await RenderMarkers(annotationGroup[imageCategories[curCategory]].Markers.ToList(), markRadius);
         }
 
     }
 
     private async Task RenderLines(List<Marker> markers, int markRadius)
     {
-        await currentCanvasContext.SetFillStyleAsync("rgb(244, 26, 26)");
-        await currentCanvasContext.SetStrokeStyleAsync("rgb(244, 26, 26)");
+        int colorIndex;
+        Math.DivRem(curCategory, colors.Count, out colorIndex);
+
+        await currentCanvasContext.SetFillStyleAsync(colors[colorIndex]);
+        await currentCanvasContext.SetStrokeStyleAsync(colors[colorIndex]);
         await currentCanvasContext.SetLineWidthAsync(markRadius / 2);
 
         await currentCanvasContext.BeginPathAsync();
@@ -208,14 +243,56 @@
 
     private async Task RenderMarkers(List<Marker> markers, int markRadius)
     {
+        int colorIndex;
+        Math.DivRem(curCategory, colors.Count, out colorIndex);
         foreach (Marker marker in markers)
         {
-            await currentCanvasContext.SetFillStyleAsync("rgb(195, 12, 12)");
+            await currentCanvasContext.SetFillStyleAsync(colors[colorIndex]);
             await currentCanvasContext.FillRectAsync(
                 marker.XCoords - markRadius, marker.YCoords - markRadius, markRadius * 2, markRadius * 2);
             await currentCanvasContext.SetFillStyleAsync("rgb(252, 252, 252)");
             await currentCanvasContext.FillRectAsync(
                 marker.XCoords - markRadius / 2, marker.YCoords - markRadius / 2, markRadius, markRadius);
         }
+    }
+
+    private async Task RenderBackShapes(int markRadius)
+    {
+        for (int i = 0; i < imageCategories.Count; i ++)
+        {
+            if (curCategory == i)
+            {
+                continue;
+            }
+
+            var backMarkers = annotationGroup[imageCategories[i]].Markers.ToList();
+            if (backMarkers.Count == 0)
+            {
+                continue;
+            }
+
+            int colorIndex;
+            Math.DivRem(i, colors.Count, out colorIndex);
+
+            await currentCanvasContext.SetFillStyleAsync(colors[colorIndex]);
+            await currentCanvasContext.SetStrokeStyleAsync(colors[colorIndex]);
+            await currentCanvasContext.SetLineWidthAsync(markRadius / 4);
+
+            await currentCanvasContext.BeginPathAsync();
+            await currentCanvasContext.MoveToAsync(backMarkers[0].XCoords, backMarkers[0].YCoords);
+            foreach (Marker marker in backMarkers)
+            {
+                await currentCanvasContext.LineToAsync(marker.XCoords, marker.YCoords);
+            }
+            await currentCanvasContext.ClosePathAsync();
+
+            await currentCanvasContext.SetGlobalAlphaAsync(.3f);
+            await currentCanvasContext.FillAsync();
+            await currentCanvasContext.SetGlobalAlphaAsync(.6f);
+            await currentCanvasContext.StrokeAsync();
+        }
+
+        await currentCanvasContext.SetGlobalAlphaAsync(1f);
+
     }
 }

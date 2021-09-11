@@ -100,7 +100,7 @@ namespace BoundBoxApp.Pages.Project
                 DeleteFiles(forDel);
             }
 
-            if (CheckChanges())
+            if (!CheckChanges())
             {
                 return LocalRedirect(returnUrl); 
             }
